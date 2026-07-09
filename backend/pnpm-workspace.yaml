@@ -1,5 +1,6 @@
 allowBuilds:
   '@apollo/protobufjs': false
   '@prisma/engines': false
+  better-sqlite3: false
   esbuild: false
   prisma: false

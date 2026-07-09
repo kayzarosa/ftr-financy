@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { ApolloServer } from "@apollo/server";
 import fastifyApollo, { fastifyApolloDrainPlugin } from "@as-integrations/fastify";
 import fastifyCors from "@fastify/cors";
