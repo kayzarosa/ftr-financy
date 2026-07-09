@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Env
+.env
+.env.local
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Prisma / SQLite
+*.sqlite
+*.sqlite3
+dev.db*
+/src/generated
