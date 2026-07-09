@@ -1,15 +1,20 @@
+import type { IRefreshTokenRepository } from "@/domain/repositories/refresh-token-repository.js";
 import type { IUserRepository } from "@/domain/repositories/user-repository.js";
-import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
 import { comparePassword } from "@/infra/crypto/hash.js";
-import { signAccessToken, signRefreshToken } from "@/infra/crypto/jwt.js";
+import { REFRESH_TOKEN_TTL_MS, signAccessToken } from "@/infra/crypto/jwt.js";
+import { generateRefreshToken } from "@/infra/crypto/refresh-token.js";
+import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
 
 type SignInUseCaseRequest = {
   email: string;
   password: string;
-}
+};
 
 export class SignInUseCase {
-  constructor(private usersRepository: IUserRepository) {}
+  constructor(
+    private usersRepository: IUserRepository,
+    private refreshTokenRepository: IRefreshTokenRepository,
+  ) {}
 
   async execute({ email, password }: SignInUseCaseRequest) {
     const user = await this.usersRepository.findByEmail(email);
@@ -25,8 +30,12 @@ export class SignInUseCase {
     }
 
     const accessToken = signAccessToken(user.id);
-    const refreshToken = signRefreshToken(user.id);
+    const refreshToken = await this.refreshTokenRepository.create({
+      token: generateRefreshToken(),
+      userId: user.id,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
+    });
 
-    return { user, accessToken, refreshToken };
+    return { user, accessToken, refreshToken: refreshToken.token };
   }
 }

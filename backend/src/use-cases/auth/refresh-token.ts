@@ -1,9 +1,7 @@
+import type { IRefreshTokenRepository } from "@/domain/repositories/refresh-token-repository.js";
 import type { IUserRepository } from "@/domain/repositories/user-repository.js";
-import {
-  signAccessToken,
-  signRefreshToken,
-  verifyToken,
-} from "@/infra/crypto/jwt.js";
+import { REFRESH_TOKEN_TTL_MS, signAccessToken } from "@/infra/crypto/jwt.js";
+import { generateRefreshToken } from "@/infra/crypto/refresh-token.js";
 import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
 
 type RefreshTokenUseCaseRequest = {
@@ -11,30 +9,39 @@ type RefreshTokenUseCaseRequest = {
 };
 
 export class RefreshTokenUseCase {
-  constructor(private usersRepository: IUserRepository) {}
+  constructor(
+    private usersRepository: IUserRepository,
+    private refreshTokenRepository: IRefreshTokenRepository,
+  ) {}
 
   async execute({ refreshToken }: RefreshTokenUseCaseRequest) {
-    let payload: ReturnType<typeof verifyToken>;
+    const storedToken = await this.refreshTokenRepository.findByToken(refreshToken);
 
-    try {
-      payload = verifyToken(refreshToken);
-    } catch {
+    if (!storedToken) {
       throw new InvalidCredentialsError();
     }
 
-    if (payload.type !== "refresh") {
+    if (storedToken.expiresAt < new Date()) {
+      await this.refreshTokenRepository.delete(storedToken.id);
       throw new InvalidCredentialsError();
     }
 
-    const user = await this.usersRepository.findById(payload.sub);
+    const user = await this.usersRepository.findById(storedToken.userId);
 
     if (!user) {
       throw new InvalidCredentialsError();
     }
 
-    const accessToken = signAccessToken(user.id);
-    const newRefreshToken = signRefreshToken(user.id);
+    await this.refreshTokenRepository.delete(storedToken.id);
 
-    return { user, accessToken, refreshToken: newRefreshToken };
+    const newRefreshToken = await this.refreshTokenRepository.create({
+      token: generateRefreshToken(),
+      userId: user.id,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
+    });
+
+    const accessToken = signAccessToken(user.id);
+
+    return { user, accessToken, refreshToken: newRefreshToken.token };
   }
 }

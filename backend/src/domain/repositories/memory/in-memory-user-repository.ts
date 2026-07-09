@@ -1,13 +1,11 @@
+import { randomUUID } from "node:crypto";
 import type { User } from "@/domain/entities/user.js";
 import type { IUserRepository } from "../user-repository.js";
-import { randomUUID } from "node:crypto";
 
 export class InMemoryUserRepository implements IUserRepository {
   public users: User[] = [];
 
-  async create(
-    data: Omit<User, "id" | "createdAt" | "updatedAt">,
-  ): Promise<User> {
+  async create(data: Omit<User, "id" | "createdAt" | "updatedAt">): Promise<User> {
     const user: User = {
       id: randomUUID(),
       createdAt: new Date(),
