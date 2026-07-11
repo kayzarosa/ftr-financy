@@ -5,9 +5,7 @@ import type { IRefreshTokenRepository } from "../refresh-token-repository.js";
 export class InMemoryRefreshTokenRepository implements IRefreshTokenRepository {
   public refreshTokens: RefreshToken[] = [];
 
-  async create(
-    data: Omit<RefreshToken, "id" | "createdAt">,
-  ): Promise<RefreshToken> {
+  async create(data: Omit<RefreshToken, "id" | "createdAt">): Promise<RefreshToken> {
     const refreshToken: RefreshToken = {
       id: randomUUID(),
       createdAt: new Date(),
@@ -20,22 +18,15 @@ export class InMemoryRefreshTokenRepository implements IRefreshTokenRepository {
   }
 
   async findByToken(token: string): Promise<RefreshToken | null> {
-    return (
-      this.refreshTokens.find((refreshToken) => refreshToken.token === token) ??
-      null
-    );
+    return this.refreshTokens.find((refreshToken) => refreshToken.token === token) ?? null;
   }
 
   async delete(id: string): Promise<void> {
-    this.refreshTokens = this.refreshTokens.filter(
-      (refreshToken) => refreshToken.id !== id,
-    );
+    this.refreshTokens = this.refreshTokens.filter((refreshToken) => refreshToken.id !== id);
   }
 
   async deleteByToken(token: string): Promise<void> {
-    this.refreshTokens = this.refreshTokens.filter(
-      (refreshToken) => refreshToken.token !== token,
-    );
+    this.refreshTokens = this.refreshTokens.filter((refreshToken) => refreshToken.token !== token);
   }
 
   async deleteAllByUserId(userId: string): Promise<void> {

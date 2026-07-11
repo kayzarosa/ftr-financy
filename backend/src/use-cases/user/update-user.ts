@@ -26,9 +26,11 @@ export class UpdateUserUseCase {
       throw new UserNotExistsError();
     }
 
-    await this.userRepository.update(id, {
+    const userUpdated = await this.userRepository.update(id, {
       ...(name !== undefined && { name }),
       ...(email !== undefined && { email }),
     });
+
+    return { userUpdated };
   }
 }

@@ -10,8 +10,8 @@ export class PrismaUserRepository implements IUserRepository {
   async update(
     id: string,
     data: Partial<Pick<User, "name" | "email" | "password">>,
-  ): Promise<void> {
-    await prisma.user.update({ where: { id }, data });
+  ): Promise<User> {
+    return await prisma.user.update({ where: { id }, data });
   }
 
   async findByEmail(email: string): Promise<User | null> {

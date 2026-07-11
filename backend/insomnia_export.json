@@ -1,0 +1,223 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-07-11T00:00:00.000Z",
+  "__export_source": "financy-manual-export",
+  "resources": [
+    {
+      "_id": "wrk_financy_backend",
+      "parentId": null,
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "name": "Financy Backend",
+      "description": "API GraphQL do desafio Financy",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_financy_base",
+      "parentId": "wrk_financy_backend",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "accessToken": "",
+        "refreshToken": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "accessToken", "refreshToken"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1783782649000,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_financy_backend",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "name": "Auth",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_user",
+      "parentId": "wrk_financy_backend",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "name": "User",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -900,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_signup",
+      "parentId": "fld_auth",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "signUp",
+      "description": "Cria uma conta nova e já retorna os tokens (login automático).",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation SignUp($name: String!, $email: String!, $password: String!) { signUp(name: $name, email: $email, password: $password) { accessToken refreshToken user { id name email createdAt } } }\",\"variables\":{\"name\":\"Kayza\",\"email\":\"kayza@example.com\",\"password\":\"123456\"}}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_signin",
+      "parentId": "fld_auth",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "signIn",
+      "description": "Autentica um usuário existente com e-mail e senha.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation SignIn($email: String!, $password: String!) { signIn(email: $email, password: $password) { accessToken refreshToken user { id name email createdAt } } }\",\"variables\":{\"email\":\"kayza@example.com\",\"password\":\"123456\"}}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_refresh_token",
+      "parentId": "fld_auth",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "refreshToken",
+      "description": "Troca um refresh token válido por um novo par de tokens (rotação).",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation RefreshToken($refreshToken: String!) { refreshToken(refreshToken: $refreshToken) { accessToken refreshToken user { id name email } } }\",\"variables\":{\"refreshToken\":\"{{ _.refreshToken }}\"}}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": {},
+      "metaSortKey": -800,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_logout",
+      "parentId": "fld_auth",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "logout",
+      "description": "Revoga um refresh token, encerrando aquela sessão.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation Logout($refreshToken: String!) { logout(refreshToken: $refreshToken) }\",\"variables\":{\"refreshToken\":\"{{ _.refreshToken }}\"}}"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": {},
+      "metaSortKey": -700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_update_user",
+      "parentId": "fld_user",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "updateUser",
+      "description": "Atualiza nome/e-mail do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdateUser($name: String, $email: String) { updateUser(name: $name, email: $email) { id name email } }\",\"variables\":{\"name\":\"Novo Nome\",\"email\":\"novo@example.com\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_update_password",
+      "parentId": "fld_user",
+      "modified": 1783782649000,
+      "created": 1783782649000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "updatePassword",
+      "description": "Troca a senha do usuário autenticado e revoga todos os refresh tokens. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdatePassword($oldPassword: String!, $newPassword: String!) { updatePassword(oldPassword: $oldPassword, newPassword: $newPassword) }\",\"variables\":{\"oldPassword\":\"123456\",\"newPassword\":\"novaSenha123\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    }
+  ]
+}

@@ -20,15 +20,11 @@ describe("LogoutUseCase", () => {
 
     await logoutUseCase.execute({ refreshToken: refreshToken.token });
 
-    const stillExists = await refreshTokenRepository.findByToken(
-      refreshToken.token,
-    );
+    const stillExists = await refreshTokenRepository.findByToken(refreshToken.token);
     expect(stillExists).toBeNull();
   });
 
   it("must not throw when the refresh token does not exist", async () => {
-    await expect(
-      logoutUseCase.execute({ refreshToken: "inexistente" }),
-    ).resolves.not.toThrow();
+    await expect(logoutUseCase.execute({ refreshToken: "inexistente" })).resolves.not.toThrow();
   });
 });

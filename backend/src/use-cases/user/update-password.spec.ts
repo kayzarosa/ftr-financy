@@ -1,10 +1,10 @@
+import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryRefreshTokenRepository } from "@/domain/repositories/memory/in-memory-refresh-token-repository.js";
 import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
-import { beforeEach, describe, expect, it } from "vitest";
-import { UpdatePasswordUseCase } from "./update-password.js";
 import { hashPassword } from "@/infra/crypto/hash.js";
-import { UserNotExistsError } from "../errors/user-not-exists-error.js";
 import { InvalidOldPasswordError } from "../errors/invalid-old-password-error.js";
+import { UserNotExistsError } from "../errors/user-not-exists-error.js";
+import { UpdatePasswordUseCase } from "./update-password.js";
 
 describe("UpdatePasswordUseCase", () => {
   let userRepository: InMemoryUserRepository;
@@ -15,10 +15,7 @@ describe("UpdatePasswordUseCase", () => {
     userRepository = new InMemoryUserRepository();
     refreshTokenRepository = new InMemoryRefreshTokenRepository();
 
-    updatePasswordUseCase = new UpdatePasswordUseCase(
-      userRepository,
-      refreshTokenRepository,
-    );
+    updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, refreshTokenRepository);
   });
 
   it("should succeed in changing the password", async () => {
@@ -46,9 +43,7 @@ describe("UpdatePasswordUseCase", () => {
     const updatedUser = await userRepository.findById(user.id);
     expect(updatedUser?.password).not.toEqual(user.password);
 
-    const tokenStillExists = await refreshTokenRepository.findByToken(
-      refreshToken.token,
-    );
+    const tokenStillExists = await refreshTokenRepository.findByToken(refreshToken.token);
     expect(tokenStillExists).toBeNull();
   });
 

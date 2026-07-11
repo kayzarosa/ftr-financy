@@ -21,7 +21,7 @@ export class InMemoryUserRepository implements IUserRepository {
   async update(
     id: string,
     data: Partial<Pick<User, "name" | "email" | "password">>,
-  ): Promise<void> {
+  ): Promise<User> {
     const userIndex = this.users.findIndex((user) => user.id === id);
     const existingUser = this.users[userIndex];
 
@@ -36,6 +36,8 @@ export class InMemoryUserRepository implements IUserRepository {
     };
 
     this.users[userIndex] = updateUser;
+
+    return updateUser;
   }
 
   async findByEmail(email: string): Promise<User | null> {

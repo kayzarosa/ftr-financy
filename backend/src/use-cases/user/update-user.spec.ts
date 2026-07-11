@@ -1,8 +1,8 @@
-import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
 import { beforeEach, describe, expect, it } from "vitest";
-import { UpdateUserUseCase } from "./update-user.js";
+import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
 import { UserAlreadyExistsError } from "../errors/user-already-exists-error.js";
 import { UserNotExistsError } from "../errors/user-not-exists-error.js";
+import { UpdateUserUseCase } from "./update-user.js";
 
 describe("UpdateUserUseCase", () => {
   let userRepository: InMemoryUserRepository;
@@ -11,9 +11,7 @@ describe("UpdateUserUseCase", () => {
   beforeEach(() => {
     userRepository = new InMemoryUserRepository();
 
-    updateUserUseCase = new UpdateUserUseCase(
-      userRepository,
-    );
+    updateUserUseCase = new UpdateUserUseCase(userRepository);
   });
   it("must be possible to successfully change the user", async () => {
     const user1 = await userRepository.create({

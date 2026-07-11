@@ -13,10 +13,7 @@ describe("SignInUseCase", () => {
   beforeEach(() => {
     userRepository = new InMemoryUserRepository();
     refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    signInUseCase = new SignInUseCase(
-      userRepository,
-      refreshTokenRepository,
-    );
+    signInUseCase = new SignInUseCase(userRepository, refreshTokenRepository);
   });
 
   it("must authenticate an existing user with the correct password", async () => {

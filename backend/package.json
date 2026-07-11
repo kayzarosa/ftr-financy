@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/infra/http/server.ts",
+    "start": "node dist/infra/http/server.js",
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/server.js",
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
