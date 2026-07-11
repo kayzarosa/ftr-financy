@@ -1,20 +1,23 @@
 import { GraphQLError } from "graphql";
+import z from "zod";
 import { makeUpdatePasswordUseCase } from "@/infra/factories/make-update-password-use-case.js";
 import { makeUpdateUserUseCase } from "@/infra/factories/make-update-user-use-case.js";
 import type { GraphQLContext } from "@/infra/http/graphql/context.js";
 import { InvalidOldPasswordError } from "@/use-cases/errors/invalid-old-password-error.js";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-error.js";
 import { UserNotExistsError } from "@/use-cases/errors/user-not-exists-error.js";
+import { ensureAuthenticated } from "../../ensure-authenticated.js";
+import { validateInput } from "../../validate-input.js";
 
-function ensureAuthenticated(context: GraphQLContext): string {
-  if (!context.userId) {
-    throw new GraphQLError("Não autenticado", {
-      extensions: { code: "UNAUTHENTICATED" },
-    });
-  }
+const updateUserSchema = z.object({
+  name: z.string().min(1, "Nome não pode ser vazio").optional(),
+  email: z.email({ pattern: z.regexes.html5Email, message: "Email inválido" }).optional(),
+});
 
-  return context.userId;
-}
+const updatePasswordSchema = z.object({
+  oldPassword: z.string().min(1, "Senha atual é obrigatória"),
+  newPassword: z.string().min(6, "Nova senha deve ter no mínimo 6 caracteres"),
+});
 
 export const userResolvers = {
   Mutation: {
@@ -26,9 +29,10 @@ export const userResolvers = {
       const userId = ensureAuthenticated(context);
 
       try {
+        const data = validateInput(updateUserSchema, args);
         const { userUpdated } = await makeUpdateUserUseCase().execute({
           id: userId,
-          ...args,
+          ...data,
         });
         return userUpdated;
       } catch (error) {
@@ -54,7 +58,8 @@ export const userResolvers = {
       const userId = ensureAuthenticated(context);
 
       try {
-        await makeUpdatePasswordUseCase().execute({ id: userId, ...args });
+        const data = validateInput(updatePasswordSchema, args);
+        await makeUpdatePasswordUseCase().execute({ id: userId, ...data });
         return true;
       } catch (error) {
         if (error instanceof InvalidOldPasswordError) {

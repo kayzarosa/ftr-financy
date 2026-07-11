@@ -2,7 +2,7 @@
 // npm install --save-dev prisma dotenv
 
 import { defineConfig } from "prisma/config";
-import { env } from "@/infra/env/index.js";
+import { env } from "./src/infra/env/index.js";
 
 const databaseUrl = env.DATABASE_URL;
 

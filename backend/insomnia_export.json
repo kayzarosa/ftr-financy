@@ -58,6 +58,18 @@
       "_type": "request_group"
     },
     {
+      "_id": "fld_category",
+      "parentId": "wrk_financy_backend",
+      "modified": 1783795900000,
+      "created": 1783795900000,
+      "name": "Category",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -800,
+      "_type": "request_group"
+    },
+    {
       "_id": "req_signup",
       "parentId": "fld_auth",
       "modified": 1783782649000,
@@ -210,6 +222,35 @@
       ],
       "authentication": {},
       "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_category",
+      "parentId": "fld_category",
+      "modified": 1783795900000,
+      "created": 1783795900000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "createCategory",
+      "description": "Cria uma categoria nova para o usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation CreateCategory($name: String!, $color: String) { createCategory(name: $name, color: $color) { id name color createdAt } }\",\"variables\":{\"name\":\"Mercado\",\"color\":\"#dd9939\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
       "isPrivate": false,
       "settingStoreCookies": true,
       "settingSendCookies": true,

@@ -18,8 +18,8 @@ export class InMemoryCategoryRepository implements ICategoryRepository {
     return category;
   }
 
-  async update(data: Omit<Category, "createdAt" | "updatedAt">): Promise<Category> {
-    const categoryIndex = this.categories.findIndex((category) => category.id === data.id);
+  async update(id: string, data: Partial<Pick<Category, "name" | "color">>): Promise<Category> {
+    const categoryIndex = this.categories.findIndex((category) => category.id === id);
     const existsCategory = this.categories[categoryIndex];
 
     if (!existsCategory) {
@@ -41,11 +41,18 @@ export class InMemoryCategoryRepository implements ICategoryRepository {
     this.categories = this.categories.filter((category) => category.id !== id);
   }
 
-  async getList(): Promise<Category[] | null> {
-    return this.categories;
+  async findManyByUserId(userId: string): Promise<Category[]> {
+    return this.categories.filter((category) => category.userId === userId);
   }
 
   async findById(id: string): Promise<Category | null> {
     return this.categories.find((category) => category.id === id) ?? null;
+  }
+
+  async findByNameAndUserId(userId: string, name: string): Promise<Category | null> {
+    return (
+      this.categories.find((category) => category.userId === userId && category.name === name) ??
+      null
+    );
   }
 }

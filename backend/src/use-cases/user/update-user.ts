@@ -4,8 +4,8 @@ import { UserNotExistsError } from "../errors/user-not-exists-error.js";
 
 type UpdateUserUseCaseRequest = {
   id: string;
-  name?: string;
-  email?: string;
+  name?: string | undefined;
+  email?: string | undefined;
 };
 
 export class UpdateUserUseCase {
