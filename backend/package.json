@@ -10,7 +10,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "@biomejs/biome": "2.5.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "dotenv": "^17.4.2",
     "prisma": "^7.8.0",
     "tsx": "^4.23.0",
@@ -44,6 +46,7 @@
     "better-sqlite3": "^12.11.1",
     "fastify": "^5.10.0",
     "graphql": "^17.0.2",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.4.3"
   }
 }

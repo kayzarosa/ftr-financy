@@ -1,16 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryRefreshTokenRepository } from "@/domain/repositories/memory/in-memory-refresh-token-repository.js";
 import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-error.js";
 import { SignUpUseCase } from "./sign-up.js";
 
 describe("SignUpUseCase", () => {
-  it("must create a user with the encrypted password", async () => {
-    const userRepository = new InMemoryUserRepository();
-    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    const sut = new SignUpUseCase(userRepository, refreshTokenRepository);
+  let userRepository: InMemoryUserRepository;
+  let refreshTokenRepository: InMemoryRefreshTokenRepository;
+  let signUpUseCase: SignUpUseCase;
 
-    const { user, accessToken, refreshToken } = await sut.execute({
+  beforeEach(() => {
+    userRepository = new InMemoryUserRepository();
+    refreshTokenRepository = new InMemoryRefreshTokenRepository();
+    signUpUseCase = new SignUpUseCase(userRepository, refreshTokenRepository);
+  });
+
+  it("must create a user with the encrypted password", async () => {
+    const { user, accessToken, refreshToken } = await signUpUseCase.execute({
       name: "Kayza",
       email: "kayza@test.com",
       password: "123456",
@@ -23,18 +29,14 @@ describe("SignUpUseCase", () => {
   });
 
   it("It should not allow the creation of two users with the same email address.", async () => {
-    const userRepository = new InMemoryUserRepository();
-    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    const sut = new SignUpUseCase(userRepository, refreshTokenRepository);
-
-    await sut.execute({
+    await signUpUseCase.execute({
       name: "Kayza",
       email: "kayza@test.com",
       password: "123456",
     });
 
     await expect(() =>
-      sut.execute({
+      signUpUseCase.execute({
         name: "Kayza",
         email: "kayza@test.com",
         password: "outrasenha",
@@ -43,11 +45,7 @@ describe("SignUpUseCase", () => {
   });
 
   it("must persist a refresh token linked to the created user", async () => {
-    const userRepository = new InMemoryUserRepository();
-    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    const sut = new SignUpUseCase(userRepository, refreshTokenRepository);
-
-    const { user, refreshToken } = await sut.execute({
+    const { user, refreshToken } = await signUpUseCase.execute({
       name: "Kayza",
       email: "kayza@test.com",
       password: "123456",

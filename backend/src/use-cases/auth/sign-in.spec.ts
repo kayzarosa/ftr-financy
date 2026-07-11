@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryRefreshTokenRepository } from "@/domain/repositories/memory/in-memory-refresh-token-repository.js";
 import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
 import { hashPassword } from "@/infra/crypto/hash.js";
@@ -6,18 +6,27 @@ import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-
 import { SignInUseCase } from "./sign-in.js";
 
 describe("SignInUseCase", () => {
-  it("must authenticate an existing user with the correct password", async () => {
-    const userRepository = new InMemoryUserRepository();
-    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    const sut = new SignInUseCase(userRepository, refreshTokenRepository);
+  let userRepository: InMemoryUserRepository;
+  let refreshTokenRepository: InMemoryRefreshTokenRepository;
+  let signInUseCase: SignInUseCase;
 
+  beforeEach(() => {
+    userRepository = new InMemoryUserRepository();
+    refreshTokenRepository = new InMemoryRefreshTokenRepository();
+    signInUseCase = new SignInUseCase(
+      userRepository,
+      refreshTokenRepository,
+    );
+  });
+
+  it("must authenticate an existing user with the correct password", async () => {
     await userRepository.create({
       name: "Kayza",
       email: "kayza@test.com",
       password: await hashPassword("123456"),
     });
 
-    const { user, accessToken, refreshToken } = await sut.execute({
+    const { user, accessToken, refreshToken } = await signInUseCase.execute({
       email: "kayza@test.com",
       password: "123456",
     });
@@ -28,12 +37,8 @@ describe("SignInUseCase", () => {
   });
 
   it("must not authenticate when the email does not exist", async () => {
-    const userRepository = new InMemoryUserRepository();
-    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    const sut = new SignInUseCase(userRepository, refreshTokenRepository);
-
     await expect(() =>
-      sut.execute({
+      signInUseCase.execute({
         email: "nao-existe@test.com",
         password: "123456",
       }),
@@ -41,10 +46,6 @@ describe("SignInUseCase", () => {
   });
 
   it("must not authenticate with the wrong password", async () => {
-    const userRepository = new InMemoryUserRepository();
-    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
-    const sut = new SignInUseCase(userRepository, refreshTokenRepository);
-
     await userRepository.create({
       name: "Kayza",
       email: "kayza@test.com",
@@ -52,7 +53,7 @@ describe("SignInUseCase", () => {
     });
 
     await expect(() =>
-      sut.execute({
+      signInUseCase.execute({
         email: "kayza@test.com",
         password: "senha-errada",
       }),

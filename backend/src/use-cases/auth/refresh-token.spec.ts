@@ -31,7 +31,9 @@ describe("RefreshTokenUseCase", () => {
     expect(refreshToken).toEqual(expect.any(String));
     expect(refreshToken).not.toEqual(oldRefreshToken.token);
 
-    const stillExists = await refreshTokenRepository.findByToken(oldRefreshToken.token);
+    const stillExists = await refreshTokenRepository.findByToken(
+      oldRefreshToken.token,
+    );
     expect(stillExists).toBeNull();
   });
 
@@ -62,11 +64,29 @@ describe("RefreshTokenUseCase", () => {
       expiresAt: new Date(Date.now() - 1_000),
     });
 
-    await expect(() => sut.execute({ refreshToken: expiredToken.token })).rejects.toBeInstanceOf(
-      InvalidCredentialsError,
-    );
+    await expect(() =>
+      sut.execute({ refreshToken: expiredToken.token }),
+    ).rejects.toBeInstanceOf(InvalidCredentialsError);
 
-    const stillExists = await refreshTokenRepository.findByToken(expiredToken.token);
+    const stillExists = await refreshTokenRepository.findByToken(
+      expiredToken.token,
+    );
     expect(stillExists).toBeNull();
+  });
+
+  it("must reject a refresh token whose user no longer exists", async () => {
+    const userRepository = new InMemoryUserRepository();
+    const refreshTokenRepository = new InMemoryRefreshTokenRepository();
+    const sut = new RefreshTokenUseCase(userRepository, refreshTokenRepository);
+
+    const orphanToken = await refreshTokenRepository.create({
+      token: "token-de-usuario-inexistente",
+      userId: "id-que-nunca-existiu",
+      expiresAt: new Date(Date.now() + 60_000), // válido, não expirado
+    });
+
+    await expect(() =>
+      sut.execute({ refreshToken: orphanToken.token }),
+    ).rejects.toBeInstanceOf(InvalidCredentialsError);
   });
 });

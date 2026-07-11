@@ -20,3 +20,6 @@ build/
 *.sqlite3
 dev.db*
 /src/generated
+
+# Test
+coverage

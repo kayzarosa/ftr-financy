@@ -1,15 +1,10 @@
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env["JWT_SECRET"];
+import { env } from "@/infra/env/index.js";
 
 export const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 export const REFRESH_TOKEN_TTL_MS = REFRESH_TOKEN_TTL_SECONDS * 1000;
 
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET não foi definida no .env");
-}
-
-const SECRET: string = JWT_SECRET;
+const SECRET = env.JWT_SECRET;
 
 type TokenPayload = {
   sub: string;

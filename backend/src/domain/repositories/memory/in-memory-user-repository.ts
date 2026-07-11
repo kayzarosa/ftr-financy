@@ -18,6 +18,26 @@ export class InMemoryUserRepository implements IUserRepository {
     return user;
   }
 
+  async update(
+    id: string,
+    data: Partial<Pick<User, "name" | "email" | "password">>,
+  ): Promise<void> {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+    const existingUser = this.users[userIndex];
+
+    if (!existingUser) {
+      throw new Error("User not Exists");
+    }
+
+    const updateUser: User = {
+      ...existingUser,
+      ...data,
+      updatedAt: new Date(),
+    };
+
+    this.users[userIndex] = updateUser;
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     return this.users.find((user) => user.email === email) ?? null;
   }
