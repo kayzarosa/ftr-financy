@@ -19,7 +19,7 @@ export class CreateCategoryUseCase {
 
     const category = await this.categoryRepository.create({
       name,
-      ...(color !== undefined && { color }),
+      color: color ?? null,
       userId,
     });
 

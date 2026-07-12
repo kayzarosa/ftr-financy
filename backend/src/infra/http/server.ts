@@ -8,10 +8,10 @@ import { prisma } from "@/infra/database/prisma/prisma.js";
 import { buildContext, type GraphQLContext } from "@/infra/http/graphql/context.js";
 import { authResolvers } from "@/infra/http/graphql/modules/auth/resolvers.js";
 import { authTypeDefs } from "@/infra/http/graphql/modules/auth/typedefs.js";
-import { userResolvers } from "@/infra/http/graphql/modules/user/resolvers.js";
-import { userTypeDefs } from "@/infra/http/graphql/modules/user/typedefs.js";
 import { categoryResolvers } from "@/infra/http/graphql/modules/category/resolvers.js";
 import { categoryTypeDefs } from "@/infra/http/graphql/modules/category/typedefs.js";
+import { userResolvers } from "@/infra/http/graphql/modules/user/resolvers.js";
+import { userTypeDefs } from "@/infra/http/graphql/modules/user/typedefs.js";
 
 const typeDefs = `#graphql
 type Query {

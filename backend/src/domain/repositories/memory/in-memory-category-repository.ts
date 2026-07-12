@@ -18,7 +18,7 @@ export class InMemoryCategoryRepository implements ICategoryRepository {
     return category;
   }
 
-  async update(id: string, data: Partial<Pick<Category, "name" | "color">>): Promise<Category> {
+  async update(id: string, data: { name?: string; color?: string | null }): Promise<Category> {
     const categoryIndex = this.categories.findIndex((category) => category.id === id);
     const existsCategory = this.categories[categoryIndex];
 

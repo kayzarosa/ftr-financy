@@ -19,5 +19,11 @@ export const categoryTypeDefs = `#graphql
     Requer header Authorization com um accessToken válido.
     """
     createCategory(name: String!, color: String): Category!
+
+    """
+    Altera uma categoria existente vinculada ao usuário
+    Requer header Authorization com um accessToken válido.
+    """
+    updateCategory(name: String, color: String): Category!
   }
 `;
