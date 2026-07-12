@@ -15,19 +15,14 @@ export class UpdateCategoryUseCase {
   async execute({ id, userId, color, name }: UpdateCategoryRequest) {
     const categoryExists = await this.categoryRepository.findById(id);
 
-    if (!categoryExists) {
+    if (!categoryExists || categoryExists.userId !== userId) {
       throw new CategoryNotFoundError();
     }
 
     if (name) {
-      const nameCategoryExists =
-        await this.categoryRepository.findByNameAndUserId(userId, name);
+      const nameCategoryExists = await this.categoryRepository.findByNameAndUserId(userId, name);
 
-      if (
-        nameCategoryExists &&
-        nameCategoryExists.id !== id &&
-        nameCategoryExists.name === name
-      ) {
+      if (nameCategoryExists && nameCategoryExists.id !== id && nameCategoryExists.name === name) {
         throw new CategoryAlreadyExistsError();
       }
     }

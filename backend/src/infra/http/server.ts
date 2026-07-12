@@ -25,6 +25,7 @@ ${categoryTypeDefs}
 const resolvers = {
   Query: {
     hello: () => "Financy API rodando!",
+    ...categoryResolvers.Query,
   },
   User: {
     ...authResolvers.User,

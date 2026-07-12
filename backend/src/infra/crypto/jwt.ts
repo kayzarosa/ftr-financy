@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { env } from "@/infra/env/index.js";
 
+export const ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
 export const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 export const REFRESH_TOKEN_TTL_MS = REFRESH_TOKEN_TTL_SECONDS * 1000;
 
@@ -13,7 +14,7 @@ type TokenPayload = {
 
 export function signAccessToken(userId: string) {
   return jwt.sign({ sub: userId, type: "access" }, SECRET, {
-    expiresIn: REFRESH_TOKEN_TTL_SECONDS,
+    expiresIn: ACCESS_TOKEN_TTL_SECONDS,
   });
 }
 

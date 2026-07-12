@@ -259,6 +259,93 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "_type": "request"
+    },
+    {
+      "_id": "req_update_category",
+      "parentId": "fld_category",
+      "modified": 1783799000000,
+      "created": 1783799000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "updateCategory",
+      "description": "Altera nome/cor de uma categoria do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdateCategory($id: ID!, $name: String, $color: String) { updateCategory(id: $id, name: $name, color: $color) { id name color createdAt } }\",\"variables\":{\"id\":\"\",\"name\":\"Supermercado\",\"color\":\"#dd9939\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_category",
+      "parentId": "fld_category",
+      "modified": 1783799000000,
+      "created": 1783799000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "deleteCategory",
+      "description": "Remove uma categoria do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation DeleteCategory($id: ID!) { deleteCategory(id: $id) }\",\"variables\":{\"id\":\"\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -800,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_list_categories",
+      "parentId": "fld_category",
+      "modified": 1783799000000,
+      "created": 1783799000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "categories",
+      "description": "Lista todas as categorias do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query Categories { categories { id name color createdAt } }\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
     }
   ]
 }

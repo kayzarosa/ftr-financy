@@ -71,4 +71,23 @@ describe("UpdateCategoryUseCase", () => {
       }),
     ).rejects.toBeInstanceOf(CategoryAlreadyExistsError);
   });
+
+  it("shouldn't be possible to change a category owned by another user.", async () => {
+    const category = await categoryRepository.create({
+      name: "Compras",
+      userId: "21",
+      color: null,
+    });
+
+    await expect(() =>
+      updateCategoryUseCase.execute({
+        id: category.id,
+        userId: "outro-usuario",
+        name: "Nome Trocado",
+      }),
+    ).rejects.toBeInstanceOf(CategoryNotFoundError);
+
+    const stillSame = await categoryRepository.findById(category.id);
+    expect(stillSame?.name).toEqual("Compras");
+  });
 });

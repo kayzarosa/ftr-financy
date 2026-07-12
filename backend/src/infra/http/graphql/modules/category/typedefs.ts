@@ -24,6 +24,21 @@ export const categoryTypeDefs = `#graphql
     Altera uma categoria existente vinculada ao usuário
     Requer header Authorization com um accessToken válido.
     """
-    updateCategory(name: String, color: String): Category!
+    updateCategory(id: ID!, name: String, color: String): Category!
+
+    """
+    Remove uma categoria vinculada ao usuário.
+    Transações que usavam essa categoria ficam sem categoria (não são apagadas).
+    Requer header Authorization com um accessToken válido.
+    """
+    deleteCategory(id: ID!): Boolean!
+  }
+
+  extend type Query {
+    """
+    Lista todas as categorias do usuário autenticado.
+    Requer header Authorization com um accessToken válido.
+    """
+    categories: [Category!]!
   }
 `;
