@@ -1,14 +1,17 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
+import { PrismaCategoryRepository } from "@/infra/database/prisma/repositories/prisma-category-repository.js";
 import { makeCreateTransactionUseCase } from "@/infra/factories/transaction/make-create-transaction-use-case.js";
+import { makeDeleteTransactionUseCase } from "@/infra/factories/transaction/make-delete-transaction-use-case.js";
+import { makeListTransactionUseCase } from "@/infra/factories/transaction/make-list-transactions-use-case.js";
+import { makeUpdateTransactionUseCase } from "@/infra/factories/transaction/make-update-transaction-use-case.js";
 import type { GraphQLContext } from "@/infra/http/graphql/context.js";
 import { ensureAuthenticated } from "@/infra/http/graphql/ensure-authenticated.js";
 import { serializeDate } from "@/infra/http/graphql/serialize-date.js";
 import { validateInput } from "@/infra/http/graphql/validate-input.js";
 import { CategoryNotFoundError } from "@/use-cases/errors/category-not-found-error.js";
-import { UserNotExistsError } from "@/use-cases/errors/user-not-exists-error.js";
-import { makeUpdateTransactionUseCase } from "@/infra/factories/transaction/make-update-transaction-use-case.js";
 import { TransactionNotFoundError } from "@/use-cases/errors/transaction-not-found-error.js";
+import { UserNotExistsError } from "@/use-cases/errors/user-not-exists-error.js";
 
 const createTransactionSchema = z.object({
   name: z.string().min(1, "Nome não pode ser vazio"),
@@ -17,7 +20,7 @@ const createTransactionSchema = z.object({
     .int("O valor deve ser um número inteiro (em centavos)")
     .positive("O valor deve ser maior que zero"),
   type: z.enum(["INCOME", "EXPENSE"]),
-  date: z.string(),
+  date: z.string().optional(),
   categoryId: z.string().optional(),
 });
 
@@ -40,19 +43,25 @@ const deleteTransactionSchema = z.object({
 
 export const transactionResolvers = {
   Transaction: {
-    createdAt: (parent: { createdAt: Date | number }) =>
-      serializeDate(parent.createdAt),
+    date: (parent: { date: Date | number }) => serializeDate(parent.date),
+    createdAt: (parent: { createdAt: Date | number }) => serializeDate(parent.createdAt),
+    category: async (parent: { categoryId: string | null }) => {
+      if (!parent.categoryId) return null;
+
+      const categoryRepository = new PrismaCategoryRepository();
+      return categoryRepository.findById(parent.categoryId);
+    },
   },
 
   Query: {
-    categories: async (_: unknown, _args: unknown, context: GraphQLContext) => {
+    transactions: async (_: unknown, _args: unknown, context: GraphQLContext) => {
       const userId = ensureAuthenticated(context);
 
-      const { categories } = await makeListCategoriesUseCase().execute({
+      const { transactions } = await makeListTransactionUseCase().execute({
         userId,
       });
 
-      return categories;
+      return transactions;
     },
   },
 
@@ -125,7 +134,7 @@ export const transactionResolvers = {
       } catch (error) {
         if (error instanceof TransactionNotFoundError) {
           throw new GraphQLError(error.message, {
-            extensions: { code: "TRANSACTION_NOT_EXISTS" },
+            extensions: { code: "TRANSACTION_NOT_FOUND" },
           });
         }
         if (error instanceof CategoryNotFoundError) {
@@ -137,23 +146,19 @@ export const transactionResolvers = {
       }
     },
 
-    deleteCategory: async (
-      _: unknown,
-      args: { id: string },
-      context: GraphQLContext,
-    ) => {
+    deleteTransaction: async (_: unknown, args: { id: string }, context: GraphQLContext) => {
       try {
         const userId = ensureAuthenticated(context);
 
-        const data = validateInput(deleteCategorySchema, args);
+        const data = validateInput(deleteTransactionSchema, args);
 
-        await makeDeleteCategoryUseCase().execute({ ...data, userId });
+        await makeDeleteTransactionUseCase().execute({ ...data, userId });
 
         return true;
       } catch (error) {
-        if (error instanceof CategoryNotFoundError) {
+        if (error instanceof TransactionNotFoundError) {
           throw new GraphQLError(error.message, {
-            extensions: { code: "CATEGORY_NOT_FOUND" },
+            extensions: { code: "TRANSACTION_NOT_FOUND" },
           });
         }
         throw error;

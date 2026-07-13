@@ -17,7 +17,7 @@ export const transactionTypeDefs = `#graphql
     "Se é uma entrada (INCOME) ou saída (EXPENSE)."
     type: TransactionType!
     "Data em que a transação ocorreu, em formato ISO 8601"
-    date: Date!
+    date: String!
     "Categoria da transação, se houver."
     category: Category
     "Data de criaçào do registro, em formato ISO 8601"

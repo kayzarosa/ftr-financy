@@ -20,15 +20,7 @@ export class UpdateTransactionUseCase {
     private categoryRepository: ICategoryRepository,
   ) {}
 
-  async execute({
-    id,
-    categoryId,
-    userId,
-    date,
-    name,
-    type,
-    value,
-  }: UpdateTransactionRequest) {
+  async execute({ id, categoryId, userId, date, name, type, value }: UpdateTransactionRequest) {
     const transaction = await this.transactionRepository.findById(id);
 
     if (!transaction || transaction.userId !== userId) {

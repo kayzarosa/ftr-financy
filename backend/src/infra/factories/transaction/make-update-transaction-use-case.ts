@@ -6,8 +6,5 @@ export function makeUpdateTransactionUseCase(): UpdateTransactionUseCase {
   const transactionRepository = new PrismaTransactionRepository();
   const categoryRepository = new PrismaCategoryRepository();
 
-  return new UpdateTransactionUseCase(
-    transactionRepository,
-    categoryRepository,
-  );
+  return new UpdateTransactionUseCase(transactionRepository, categoryRepository);
 }

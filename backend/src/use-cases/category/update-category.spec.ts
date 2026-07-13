@@ -90,4 +90,21 @@ describe("UpdateCategoryUseCase", () => {
     const stillSame = await categoryRepository.findById(category.id);
     expect(stillSame?.name).toEqual("Compras");
   });
+
+  it("should be possible to change only the color, without checking name uniqueness.", async () => {
+    const category = await categoryRepository.create({
+      name: "Compras",
+      userId: "21",
+      color: null,
+    });
+
+    const { category: updatedCategory } = await updateCategoryUseCase.execute({
+      id: category.id,
+      userId: category.userId,
+      color: "#909f23",
+    });
+
+    expect(updatedCategory.name).toEqual("Compras");
+    expect(updatedCategory.color).toEqual("#909f23");
+  });
 });
