@@ -1,13 +1,13 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
-import { makeUpdatePasswordUseCase } from "@/infra/factories/make-update-password-use-case.js";
-import { makeUpdateUserUseCase } from "@/infra/factories/make-update-user-use-case.js";
+import { makeUpdatePasswordUseCase } from "@/infra/factories/user/make-update-password-use-case.js";
+import { makeUpdateUserUseCase } from "@/infra/factories/user/make-update-user-use-case.js";
 import type { GraphQLContext } from "@/infra/http/graphql/context.js";
+import { ensureAuthenticated } from "@/infra/http/graphql/ensure-authenticated.js";
+import { validateInput } from "@/infra/http/graphql/validate-input.js";
 import { InvalidOldPasswordError } from "@/use-cases/errors/invalid-old-password-error.js";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-error.js";
 import { UserNotExistsError } from "@/use-cases/errors/user-not-exists-error.js";
-import { ensureAuthenticated } from "../../ensure-authenticated.js";
-import { validateInput } from "../../validate-input.js";
 
 const updateUserSchema = z.object({
   name: z.string().min(1, "Nome não pode ser vazio").optional(),

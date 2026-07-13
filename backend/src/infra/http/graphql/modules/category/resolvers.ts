@@ -1,9 +1,9 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
-import { makeCreateCategoryUseCase } from "@/infra/factories/make-create-category-use-case.js";
-import { makeDeleteCategoryUseCase } from "@/infra/factories/make-delete-category-use-case.js";
-import { makeListCategoriesUseCase } from "@/infra/factories/make-list-categories-use-case.js";
-import { makeUpdateCategoryUseCase } from "@/infra/factories/make-update-category-use-case.js";
+import { makeCreateCategoryUseCase } from "@/infra/factories/category/make-create-category-use-case.js";
+import { makeDeleteCategoryUseCase } from "@/infra/factories/category/make-delete-category-use-case.js";
+import { makeListCategoriesUseCase } from "@/infra/factories/category/make-list-categories-use-case.js";
+import { makeUpdateCategoryUseCase } from "@/infra/factories/category/make-update-category-use-case.js";
 import type { GraphQLContext } from "@/infra/http/graphql/context.js";
 import { ensureAuthenticated } from "@/infra/http/graphql/ensure-authenticated.js";
 import { serializeDate } from "@/infra/http/graphql/serialize-date.js";

@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryCategoryRepository } from "@/domain/repositories/memory/in-memory-category-repository.js";
 import { InMemoryTransactionRepository } from "@/domain/repositories/memory/in-memory-transaction-repository.js";
 import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
-import { CreateTransactionUseCase } from "./create-transaction.js";
-import { UserNotExistsError } from "../errors/user-not-exists-error.js";
 import { CategoryNotFoundError } from "../errors/category-not-found-error.js";
+import { UserNotExistsError } from "../errors/user-not-exists-error.js";
+import { CreateTransactionUseCase } from "./create-transaction.js";
 
 describe("CreateTransactionUseCase", () => {
   let userRepository: InMemoryUserRepository;
@@ -81,7 +81,7 @@ describe("CreateTransactionUseCase", () => {
 
     expect(user.id).toEqual(expect.any(String));
     expect(user.password).toEqual("123456");
-    
+
     await expect(() =>
       createTransactionUseCase.execute({
         name: "Mercado",

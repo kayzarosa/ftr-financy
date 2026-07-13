@@ -1,9 +1,9 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
-import { makeLogoutUseCase } from "@/infra/factories/make-logout-use-case.js";
-import { makeRefreshTokenUseCase } from "@/infra/factories/make-refresh-token-use-case.js";
-import { makeSignInUseCase } from "@/infra/factories/make-sign-in-use-case.js";
-import { makeSignUpUseCase } from "@/infra/factories/make-sign-up-use-case.js";
+import { makeLogoutUseCase } from "@/infra/factories/auth/make-logout-use-case.js";
+import { makeRefreshTokenUseCase } from "@/infra/factories/auth/make-refresh-token-use-case.js";
+import { makeSignInUseCase } from "@/infra/factories/auth/make-sign-in-use-case.js";
+import { makeSignUpUseCase } from "@/infra/factories/auth/make-sign-up-use-case.js";
 import { serializeDate } from "@/infra/http/graphql/serialize-date.js";
 import { validateInput } from "@/infra/http/graphql/validate-input.js";
 import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
