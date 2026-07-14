@@ -1,0 +1,16 @@
+services:
+  backend:
+    # Troque <AWS_ACCOUNT_ID> e <REGION> pelos valores reais da sua conta.
+    image: <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/financy-backend:latest
+    ports:
+      - "3333:3333"
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_URL: file:./data/dev.db
+    volumes:
+      - backend_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  backend_data:

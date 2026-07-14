@@ -7,6 +7,7 @@ import { makeSignUpUseCase } from "@/infra/factories/auth/make-sign-up-use-case.
 import { serializeDate } from "@/infra/http/graphql/serialize-date.js";
 import { validateInput } from "@/infra/http/graphql/validate-input.js";
 import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
+import { InvalidRefreshTokenError } from "@/use-cases/errors/invalid-refresh-token-error.js";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-error.js";
 
 const signUpSchema = z.object({
@@ -58,9 +59,9 @@ export const authResolvers = {
       try {
         return await makeRefreshTokenUseCase().execute(args);
       } catch (error) {
-        if (error instanceof InvalidCredentialsError) {
+        if (error instanceof InvalidRefreshTokenError) {
           throw new GraphQLError(error.message, {
-            extensions: { code: "INVALID_CREDENTIALS" },
+            extensions: { code: "INVALID_REFRESH_TOKEN" },
           });
         }
         throw error;

@@ -2,7 +2,7 @@ import type { IRefreshTokenRepository } from "@/domain/repositories/refresh-toke
 import type { IUserRepository } from "@/domain/repositories/user-repository.js";
 import { REFRESH_TOKEN_TTL_MS, signAccessToken } from "@/infra/crypto/jwt.js";
 import { generateRefreshToken } from "@/infra/crypto/refresh-token.js";
-import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
+import { InvalidRefreshTokenError } from "@/use-cases/errors/invalid-refresh-token-error.js";
 
 type RefreshTokenUseCaseRequest = {
   refreshToken: string;
@@ -18,18 +18,18 @@ export class RefreshTokenUseCase {
     const storedToken = await this.refreshTokenRepository.findByToken(refreshToken);
 
     if (!storedToken) {
-      throw new InvalidCredentialsError();
+      throw new InvalidRefreshTokenError();
     }
 
     if (storedToken.expiresAt < new Date()) {
       await this.refreshTokenRepository.delete(storedToken.id);
-      throw new InvalidCredentialsError();
+      throw new InvalidRefreshTokenError();
     }
 
     const user = await this.usersRepository.findById(storedToken.userId);
 
     if (!user) {
-      throw new InvalidCredentialsError();
+      throw new InvalidRefreshTokenError();
     }
 
     await this.refreshTokenRepository.delete(storedToken.id);

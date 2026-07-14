@@ -70,6 +70,18 @@
       "_type": "request_group"
     },
     {
+      "_id": "fld_transaction",
+      "parentId": "wrk_financy_backend",
+      "modified": 1783990000000,
+      "created": 1783990000000,
+      "name": "Transaction",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -700,
+      "_type": "request_group"
+    },
+    {
       "_id": "req_signup",
       "parentId": "fld_auth",
       "modified": 1783782649000,
@@ -330,6 +342,122 @@
       "body": {
         "mimeType": "application/graphql",
         "text": "{\"query\":\"query Categories { categories { id name color createdAt } }\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_transaction",
+      "parentId": "fld_transaction",
+      "modified": 1783990000000,
+      "created": 1783990000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "createTransaction",
+      "description": "Cria uma transação para o usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation CreateTransaction($name: String!, $value: Int!, $type: TransactionType!, $date: String, $categoryId: ID) { createTransaction(name: $name, value: $value, type: $type, date: $date, categoryId: $categoryId) { id name value type date category { id name color } createdAt } }\",\"variables\":{\"name\":\"Compras da semana\",\"value\":15000,\"type\":\"EXPENSE\",\"categoryId\":\"\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_update_transaction",
+      "parentId": "fld_transaction",
+      "modified": 1783990000000,
+      "created": 1783990000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "updateTransaction",
+      "description": "Altera uma transação do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdateTransaction($id: ID!, $name: String, $value: Int, $type: TransactionType, $date: String, $categoryId: ID) { updateTransaction(id: $id, name: $name, value: $value, type: $type, date: $date, categoryId: $categoryId) { id name value type date category { id name } } }\",\"variables\":{\"id\":\"\",\"value\":20000}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_transaction",
+      "parentId": "fld_transaction",
+      "modified": 1783990000000,
+      "created": 1783990000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "deleteTransaction",
+      "description": "Remove uma transação do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation DeleteTransaction($id: ID!) { deleteTransaction(id: $id) }\",\"variables\":{\"id\":\"\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.accessToken }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": -800,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_list_transactions",
+      "parentId": "fld_transaction",
+      "modified": 1783990000000,
+      "created": 1783990000000,
+      "url": "{{ _.base_url }}/graphql",
+      "name": "transactions",
+      "description": "Lista todas as transações do usuário autenticado. Requer accessToken.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query Transactions { transactions { id name value type date category { id name color } createdAt } }\",\"variables\":{}}"
       },
       "parameters": [],
       "headers": [

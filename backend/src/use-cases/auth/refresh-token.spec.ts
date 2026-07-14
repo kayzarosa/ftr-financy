@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { InMemoryRefreshTokenRepository } from "@/domain/repositories/memory/in-memory-refresh-token-repository.js";
 import { InMemoryUserRepository } from "@/domain/repositories/memory/in-memory-user-repository.js";
 import { hashPassword } from "@/infra/crypto/hash.js";
-import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error.js";
+import { InvalidRefreshTokenError } from "@/use-cases/errors/invalid-refresh-token-error.js";
 import { RefreshTokenUseCase } from "./refresh-token.js";
 
 describe("RefreshTokenUseCase", () => {
@@ -42,7 +42,7 @@ describe("RefreshTokenUseCase", () => {
 
     await expect(() =>
       sut.execute({ refreshToken: "token-que-nao-existe" }),
-    ).rejects.toBeInstanceOf(InvalidCredentialsError);
+    ).rejects.toBeInstanceOf(InvalidRefreshTokenError);
   });
 
   it("must reject and delete an expired refresh token", async () => {
@@ -63,7 +63,7 @@ describe("RefreshTokenUseCase", () => {
     });
 
     await expect(() => sut.execute({ refreshToken: expiredToken.token })).rejects.toBeInstanceOf(
-      InvalidCredentialsError,
+      InvalidRefreshTokenError,
     );
 
     const stillExists = await refreshTokenRepository.findByToken(expiredToken.token);
@@ -82,7 +82,7 @@ describe("RefreshTokenUseCase", () => {
     });
 
     await expect(() => sut.execute({ refreshToken: orphanToken.token })).rejects.toBeInstanceOf(
-      InvalidCredentialsError,
+      InvalidRefreshTokenError,
     );
   });
 });
