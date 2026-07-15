@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/inter";
+
+@theme {
+  --font-sans: "Inter Variable", sans-serif;
+
+  --color-brand-dark: #124b2b;
+  --color-brand-base: #1f6f43;
+
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #111827;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-danger: #ef4444;
+  --color-success: #19ad70;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+  body {
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-800);
+  }
+}
