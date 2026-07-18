@@ -54,7 +54,7 @@ export function LoginPage() {
         <img src={logo} alt="Financy" className="w-33.5 h-8" />
       </div>
 
-      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-8 text-center gap-1">
           <h1 className="text-gray-800 font-bold text-[20px]">Fazer login</h1>
           <p className="text-[16px] font-normal text-gray-600">Entre na sua conta para continuar</p>

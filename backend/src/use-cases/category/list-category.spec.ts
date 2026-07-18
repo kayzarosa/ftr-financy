@@ -16,16 +16,22 @@ describe("ListCategoriesUseCase", () => {
       name: "Compras",
       userId: "21",
       color: null,
+      description: null,
+      icon: null,
     });
     await categoryRepository.create({
       name: "Lazer",
       userId: "21",
       color: "#3498db",
+      description: null,
+      icon: null,
     });
     await categoryRepository.create({
       name: "Outro usuário",
       userId: "99",
       color: null,
+      description: null,
+      icon: null,
     });
 
     const { categories } = await listCategoriesUseCase.execute({

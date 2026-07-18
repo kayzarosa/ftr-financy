@@ -36,9 +36,11 @@ model RefreshToken {
 }
 
 model Category {
-  id    String  @id @default(uuid())
-  name  String
-  color String?
+  id          String  @id @default(uuid())
+  name        String
+  color       String?
+  description String?
+  icon        String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

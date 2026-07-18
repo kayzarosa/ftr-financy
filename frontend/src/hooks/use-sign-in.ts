@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { gql } from "graphql-request";
-import { graphqlClient } from "@/lib/graphql-client";
+import { request } from "@/lib/graphql-request";
 
 const SIGN_IN = gql`
   mutation SignIn($email: String!, $password: String!) {
@@ -31,6 +31,6 @@ type SignInResponse = {
 
 export function useSignIn() {
   return useMutation({
-    mutationFn: (input: SignInInput) => graphqlClient.request<SignInResponse>(SIGN_IN, input),
+    mutationFn: (input: SignInInput) => request<SignInResponse>(SIGN_IN, input),
   });
 }

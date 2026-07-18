@@ -1,9 +1,11 @@
 import * as Toast from "@radix-ui/react-toast";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/app-layout";
 import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { useAuthStore } from "./stores/auth-store";
+import { ProfilePage } from "./pages/ProfilePage";
+import { CategoriesPage } from "./pages/CategoriesPage";
 
 export function App() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -15,17 +17,19 @@ export function App() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<div>Dashboard</div>} />
             <Route path="/transacoes" element={<div>Transações</div>} />
-            <Route path="/categorias" element={<div>Categoria</div>} />
-            <Route path="/usuario" element={<div>Usuario</div>} />
+            <Route path="/categorias" element={<CategoriesPage />} />
+            <Route path="/usuario" element={<ProfilePage />} />
           </Route>
         ) : (
           <Route path="/" element={<LoginPage />} />
         )}
 
         <Route path="/cadastro" element={<SignUpPage />} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      <Toast.Viewport className="fixed top-0 right-0 z-50 m-4 w-auto max-w-sm outline-none" />
+      <Toast.Viewport className="fixed top-0 right-0 z-100 m-4 w-auto max-w-sm outline-none" />
     </Toast.Provider>
   );
 }

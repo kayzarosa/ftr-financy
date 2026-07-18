@@ -17,6 +17,8 @@ describe("DeleteCategoryUseCase", () => {
       name: "Compras",
       userId: "21",
       color: null,
+      description: null,
+      icon: null,
     });
 
     await deleteCategoryUseCase.execute({ id: category.id, userId: "21" });
@@ -36,6 +38,8 @@ describe("DeleteCategoryUseCase", () => {
       name: "Compras",
       userId: "21",
       color: null,
+      description: null,
+      icon: null,
     });
 
     await expect(() =>

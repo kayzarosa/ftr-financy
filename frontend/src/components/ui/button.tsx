@@ -11,14 +11,21 @@ export const buttonVariants = tv({
       primary: "text-white bg-brand-base hover:bg-brand-dark",
       secondary: "text-gray-800 bg-gray-100 hover:bg-gray-200",
       outline: "text-gray-700 bg-white border border-gray-300 hover:bg-gray-100",
-      destructive: "text-white bg-danger hover:bg-danger/90",
+      link: "text-brand-base font-medium hover:underline",
     },
     size: {
       default: "h-12 px-4 text-sm",
       sm: "h-8 px-3 text-xs",
-      icon: "size-9",
+      icon: "size-8",
     },
   },
+
+  compoundVariants: [
+    {
+      variant: "link",
+      class: "h-auto p-0",
+    },
+  ],
 
   defaultVariants: {
     variant: "primary",

@@ -16,9 +16,11 @@ const labelStyles = tv({
 const iconStyles = tv({
   base: "transition-colors size-4 mr-3",
   variants: {
-    hasError: {
-      true: "text-danger",
-      false: "text-gray-400 group-focus-within:text-brand-base",
+    state: {
+      error: "text-danger",
+      disabled: "text-gray-400",
+      default:
+        "text-gray-400 group-has-[input:not(:placeholder-shown)]:text-gray-800 group-focus-within:text-brand-base",
     },
   },
 });
@@ -33,6 +35,7 @@ type InputProps = ComponentPropsWithRef<"input"> & {
 
 export function Input({ id, label, icon: Icon, error, hint, type, ...props }: InputProps) {
   const hasError = !!error;
+  const iconState = hasError ? "error" : props.disabled ? "disabled" : "default";
   const [showPassword, setShowPassword] = useState(false);
 
   const isPassword = type === "password";
@@ -46,12 +49,12 @@ export function Input({ id, label, icon: Icon, error, hint, type, ...props }: In
       </label>
 
       <div className="flex flex-row items-center pt-3.5 pb-3.5 pl-3 pr-3 border border-gray-300 rounded-lg">
-        {Icon && <Icon className={iconStyles({ hasError })} />}
+        {Icon && <Icon className={iconStyles({ state: iconState })} />}
 
         <input
           id={id}
           type={inputType}
-          className="w-full bg-transparent border-none outline-none text-gray-400 placeholder:text-gray-400 text-[16px] placeholder:text-[16px]"
+          className="w-full bg-transparent border-none outline-none text-gray-800 placeholder:text-gray-400 text-[16px] placeholder:text-[16px] disabled:text-gray-400 disabled:cursor-not-allowed"
           {...props}
         />
 
@@ -72,9 +75,9 @@ export function Input({ id, label, icon: Icon, error, hint, type, ...props }: In
       </div>
 
       {hasError ? (
-        <span className="mt-2 text-[12px] text-danger">{error.message}</span>
+        <span className="text-[12px] text-danger">{error.message}</span>
       ) : (
-        hint && <span className="mt-2 text-[12px] text-gray-500">{hint}</span>
+        hint && <span className="text-[12px] text-gray-500">{hint}</span>
       )}
     </div>
   );

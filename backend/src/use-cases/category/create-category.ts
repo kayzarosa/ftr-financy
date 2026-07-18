@@ -4,13 +4,15 @@ import { CategoryAlreadyExistsError } from "../errors/category-already-exists-er
 type CreateCategoryRequest = {
   name: string;
   color?: string | undefined;
+  description?: string | undefined;
+  icon?: string | undefined;
   userId: string;
 };
 
 export class CreateCategoryUseCase {
   constructor(private categoryRepository: ICategoryRepository) {}
 
-  async execute({ name, userId, color }: CreateCategoryRequest) {
+  async execute({ name, userId, color, description, icon }: CreateCategoryRequest) {
     const categoryWithSameName = await this.categoryRepository.findByNameAndUserId(userId, name);
 
     if (categoryWithSameName) {
@@ -20,6 +22,8 @@ export class CreateCategoryUseCase {
     const category = await this.categoryRepository.create({
       name,
       color: color ?? null,
+      description: description ?? null,
+      icon: icon ?? null,
       userId,
     });
 

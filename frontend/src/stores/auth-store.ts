@@ -12,6 +12,7 @@ type AuthState = {
   refreshToken: string | null;
   user: User | null;
   setAuth: (data: { accessToken: string; refreshToken: string; user: User }) => void;
+  updateUser: (user: Partial<User>) => void;
   logout: () => void;
 };
 
@@ -22,6 +23,10 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       user: null,
       setAuth: ({ accessToken, refreshToken, user }) => set({ accessToken, refreshToken, user }),
+      updateUser: (partialUser) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...partialUser } : state.user,
+        })),
       logout: () => set({ accessToken: null, refreshToken: null, user: null }),
     }),
     { name: "financy-auth" },
