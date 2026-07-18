@@ -1,4 +1,4 @@
-import { SquarePen, Trash, type LucideIcon } from "lucide-react";
+import { type LucideIcon, SquarePen, Trash } from "lucide-react";
 import { Button } from "./ui/button";
 
 type Category = {
@@ -61,9 +61,7 @@ export function CardCategory({
         </div>
       </div>
 
-      <h3 className="text-[16px] text-gray-800 font-semibold mt-6">
-        {category.name}
-      </h3>
+      <h3 className="text-[16px] text-gray-800 font-semibold mt-6">{category.name}</h3>
 
       <p className="text-[14px] text-gray-600">{category.description}</p>
 
@@ -78,9 +76,7 @@ export function CardCategory({
           {category.name}
         </div>
 
-        <p className="font-medium text-[14px] text-gray-600">
-          {category.transactionsCount} itens
-        </p>
+        <p className="font-medium text-[14px] text-gray-600">{category.transactionsCount} itens</p>
       </div>
     </article>
   );

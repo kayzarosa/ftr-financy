@@ -1,22 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
+import { useCreateCategory } from "@/hooks/use-create-categories";
+import { useUpdateCategory } from "@/hooks/use-update-categories";
 import { categoryColors, DEFAULT_CATEGORY_COLOR } from "@/lib/category-colors";
 import { categoryIconNames, getCategoryIcon } from "@/lib/category-icons";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { OptionPicker, OptionPickerItem } from "./ui/option-picker";
-import { Button } from "./ui/button";
-import { useCreateCategory } from "@/hooks/use-create-categories";
-import { useState } from "react";
-import { NotificationToast } from "./ui/notification-toast";
 import { getErrorMessage } from "@/lib/get-error-message";
-import { useUpdateCategory } from "@/hooks/use-update-categories";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./ui/dialog";
+import { Input } from "./ui/input";
+import { NotificationToast } from "./ui/notification-toast";
+import { OptionPicker, OptionPickerItem } from "./ui/option-picker";
 
 const upSertCategorySchema = z.object({
   name: z.string().min(3, "Título da categoria não informado"),
@@ -41,18 +36,11 @@ type UpSertCategoryDialogProps = {
   category?: Category | null;
 };
 
-export function UpSertCategoryDialog({
-  open,
-  onOpenChange,
-  category,
-}: UpSertCategoryDialogProps) {
+export function UpSertCategoryDialog({ open, onOpenChange, category }: UpSertCategoryDialogProps) {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastDescription, setToastDescription] = useState("");
-  const [toastVariant, setToastVariant] = useState<"success" | "error">(
-    "success",
-  );
-  const { mutate: createCategory, isPending: categoryIsPending } =
-    useCreateCategory();
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
+  const { mutate: createCategory, isPending: categoryIsPending } = useCreateCategory();
   const { mutate: updateCategory } = useUpdateCategory();
 
   function handleOpenChange(nextOpen: boolean) {
@@ -150,10 +138,7 @@ export function UpSertCategoryDialog({
             Organize suas transações com categorias
           </DialogDescription>
 
-          <form
-            className="mt-6 flex flex-col gap-4"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className="mt-6 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
             <Input
               id="name"
               label="Título"
@@ -177,20 +162,11 @@ export function UpSertCategoryDialog({
               control={control}
               name="icon"
               render={({ field }) => (
-                <OptionPicker
-                  label="Ícone"
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
+                <OptionPicker label="Ícone" value={field.value} onValueChange={field.onChange}>
                   {categoryIconNames.map((name) => {
                     const Icon = getCategoryIcon(name);
                     return (
-                      <OptionPickerItem
-                        className="size-10.5"
-                        key={name}
-                        value={name}
-                        label={name}
-                      >
+                      <OptionPickerItem className="size-10.5" key={name} value={name} label={name}>
                         <Icon className="size-5 text-gray-600" />
                       </OptionPickerItem>
                     );
@@ -203,11 +179,7 @@ export function UpSertCategoryDialog({
               control={control}
               name="color"
               render={({ field }) => (
-                <OptionPicker
-                  label="Cor"
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
+                <OptionPicker label="Cor" value={field.value} onValueChange={field.onChange}>
                   {categoryColors.map(({ value, label }) => (
                     <OptionPickerItem
                       className="h-7.5 flex-1 p-1"
@@ -215,22 +187,14 @@ export function UpSertCategoryDialog({
                       value={value}
                       label={label}
                     >
-                      <span
-                        className="size-full rounded"
-                        style={{ backgroundColor: value }}
-                      />
+                      <span className="size-full rounded" style={{ backgroundColor: value }} />
                     </OptionPickerItem>
                   ))}
                 </OptionPicker>
               )}
             />
 
-            <Button
-              type="submit"
-              variant="primary"
-              isLoading={categoryIsPending}
-              className="mt-2"
-            >
+            <Button type="submit" variant="primary" isLoading={categoryIsPending} className="mt-2">
               {categoryIsPending ? "Salvando..." : "Salvar"}
             </Button>
           </form>

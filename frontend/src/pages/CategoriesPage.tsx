@@ -1,26 +1,19 @@
 import { ArrowUpDown, CircleDashed, Plus, Tag } from "lucide-react";
-import { CategoriesEmptyState } from "@/components/categories-empty-state";
-import { Button } from "@/components/ui/button";
-import { CardInfo } from "@/components/ui/card-info";
-import { useCategoriesCountTransactions } from "@/hooks/use-categories-count-transaction";
-import { getCategoryIcon } from "@/lib/category-icons";
-import {
-  UpSertCategoryDialog,
-  type Category,
-} from "@/components/upsert-category-dialog";
 import { useState } from "react";
 import { CardCategory } from "@/components/card-category";
+import { CategoriesEmptyState } from "@/components/categories-empty-state";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { useDeleteCategory } from "@/hooks/use-delete-category";
+import { Button } from "@/components/ui/button";
+import { CardInfo } from "@/components/ui/card-info";
 import { NotificationToast } from "@/components/ui/notification-toast";
+import { type Category, UpSertCategoryDialog } from "@/components/upsert-category-dialog";
+import { useCategoriesCountTransactions } from "@/hooks/use-categories-count-transaction";
+import { useDeleteCategory } from "@/hooks/use-delete-category";
+import { getCategoryIcon } from "@/lib/category-icons";
 import { getErrorMessage } from "@/lib/get-error-message";
 
 export function CategoriesPage() {
-  const {
-    data: categories,
-    isLoading,
-    error,
-  } = useCategoriesCountTransactions();
+  const { data: categories, isLoading, error } = useCategoriesCountTransactions();
   const { mutate: removeCategory } = useDeleteCategory();
   const [upsetCategoryOpen, setUpsetCategoryOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -28,28 +21,21 @@ export function CategoriesPage() {
   const [idCategoryDelete, setIdCategoryDelete] = useState("");
   const [toastOpen, setToastOpen] = useState(false);
   const [toastDescription, setToastDescription] = useState("");
-  const [toastVariant, setToastVariant] = useState<"success" | "error">(
-    "success",
-  );
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
 
   function handleUpsertOpenChange(open: boolean) {
     setUpsetCategoryOpen(open);
     if (!open) setEditingCategory(null);
   }
 
-  const totalTransactions =
-    categories?.reduce((sum, c) => sum + c.transactionsCount, 0) ?? 0;
+  const totalTransactions = categories?.reduce((sum, c) => sum + c.transactionsCount, 0) ?? 0;
 
   const mostUsedCategory =
     totalTransactions === 0
       ? null
-      : categories?.reduce((most, c) =>
-          c.transactionsCount > most.transactionsCount ? c : most,
-        );
+      : categories?.reduce((most, c) => (c.transactionsCount > most.transactionsCount ? c : most));
 
-  const MostUsedIcon = !mostUsedCategory
-    ? CircleDashed
-    : getCategoryIcon(mostUsedCategory.icon);
+  const MostUsedIcon = !mostUsedCategory ? CircleDashed : getCategoryIcon(mostUsedCategory.icon);
 
   function openCreateCategory() {
     setEditingCategory(null);
@@ -90,9 +76,7 @@ export function CategoriesPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-gray-800 font-bold text-2xl">Categorias</h1>
-          <p className="text-[16px] text-gray-600">
-            Organize suas transações por categorias
-          </p>
+          <p className="text-[16px] text-gray-600">Organize suas transações por categorias</p>
         </div>
 
         <Button variant="primary" onClick={openCreateCategory}>
@@ -134,6 +118,10 @@ export function CategoriesPage() {
 
       {!isLoading && categories?.length === 0 && (
         <CategoriesEmptyState openCreateCategory={openCreateCategory} />
+      )}
+
+      {error && (
+        <p className="text-danger">Não foi possível carregar as categorias. Tente novamente.</p>
       )}
 
       <section className="flex flex-wrap gap-4">

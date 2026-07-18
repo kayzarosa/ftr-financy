@@ -1,6 +1,6 @@
-import { request } from "@/lib/graphql-request";
 import { useQuery } from "@tanstack/react-query";
 import { gql } from "graphql-request";
+import { request } from "@/lib/graphql-request";
 
 const CATEGORY_COUNT_TRANSACTIONS = gql`
   query CategoriesCountTransactions {

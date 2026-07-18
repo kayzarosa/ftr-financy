@@ -28,23 +28,13 @@ export function AppLayout() {
         <nav
           className={`order-last flex w-full items-center justify-between gap-5 sm:order-0 sm:w-auto sm:justify-normal`}
         >
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) => navLinkVariants({ isActive })}
-          >
+          <NavLink to="/" end className={({ isActive }) => navLinkVariants({ isActive })}>
             Dashboard
           </NavLink>
-          <NavLink
-            to="/transacoes"
-            className={({ isActive }) => navLinkVariants({ isActive })}
-          >
+          <NavLink to="/transacoes" className={({ isActive }) => navLinkVariants({ isActive })}>
             Transações
           </NavLink>
-          <NavLink
-            to="/categorias"
-            className={({ isActive }) => navLinkVariants({ isActive })}
-          >
+          <NavLink to="/categorias" className={({ isActive }) => navLinkVariants({ isActive })}>
             Categorias
           </NavLink>
         </nav>

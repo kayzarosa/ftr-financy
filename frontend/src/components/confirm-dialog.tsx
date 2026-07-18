@@ -29,19 +29,13 @@ export function ConfirmDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogTitle className="text-[16px] font-semibold text-gray-800">
-          {title}
-        </DialogTitle>
+        <DialogTitle className="text-[16px] font-semibold text-gray-800">{title}</DialogTitle>
         <DialogDescription className="mt-1 text-[14px] text-gray-600">
           {description}
         </DialogDescription>
 
         <div className="mt-6 flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isLoading}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
             {cancelLabel}
           </Button>
 

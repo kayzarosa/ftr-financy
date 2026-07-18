@@ -13,15 +13,14 @@ type CategoryInput = {
 };
 
 type CategoryResponse = {
-  deleteCategory: boolean
+  deleteCategory: boolean;
 };
 
 export function useDeleteCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CategoryInput) =>
-      request<CategoryResponse>(DELETE_CATEGORY, input),
+    mutationFn: (input: CategoryInput) => request<CategoryResponse>(DELETE_CATEGORY, input),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["categoriesCountTransactions"],

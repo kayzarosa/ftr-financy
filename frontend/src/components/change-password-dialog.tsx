@@ -13,9 +13,7 @@ import { getErrorMessage } from "@/lib/get-error-message";
 const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, "Senha atual é obrigatória"),
-    newPassword: z
-      .string()
-      .min(8, "Nova senha deve ter no mínimo 8 caracteres"),
+    newPassword: z.string().min(8, "Nova senha deve ter no mínimo 8 caracteres"),
     confirmPassword: z.string().min(1, "Confirme a nova senha"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -30,18 +28,12 @@ type ChangePasswordDialogProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-export function ChangePasswordDialog({
-  open,
-  onOpenChange,
-}: ChangePasswordDialogProps) {
+export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialogProps) {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastDescription, setToastDescription] = useState("");
-  const [toastVariant, setToastVariant] = useState<"success" | "error">(
-    "success",
-  );
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
 
-  const { mutate: updatePassword, isPending: updateIsPending } =
-    useUpdatePassword();
+  const { mutate: updatePassword, isPending: updateIsPending } = useUpdatePassword();
 
   const {
     register,
@@ -82,14 +74,9 @@ export function ChangePasswordDialog({
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent>
-          <DialogTitle className="mb-4 text-lg font-bold text-gray-800">
-            Alterar senha
-          </DialogTitle>
+          <DialogTitle className="mb-4 text-lg font-bold text-gray-800">Alterar senha</DialogTitle>
 
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <Input
               id="oldPassword"
               label="Senha atual"
