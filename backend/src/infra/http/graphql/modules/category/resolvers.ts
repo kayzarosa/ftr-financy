@@ -45,11 +45,7 @@ export const categoryResolvers = {
       return categories;
     },
 
-    categoriesCountTransactions: async (
-      _: unknown,
-      _args: unknown,
-      context: GraphQLContext,
-    ) => {
+    categoriesCountTransactions: async (_: unknown, _args: unknown, context: GraphQLContext) => {
       const userId = ensureAuthenticated(context);
 
       const { categories } = await makeListCategoriesCountTransactionsUseCase().execute({

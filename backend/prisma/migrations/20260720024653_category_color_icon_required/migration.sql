@@ -5,6 +5,9 @@
   - Made the column `icon` on table `Category` required. This step will fail if there are existing NULL values in that column.
 
 */
+UPDATE "Category" SET "color" = '#16a34a' WHERE "color" IS NULL;
+UPDATE "Category" SET "icon" = 'ReceiptText' WHERE "icon" IS NULL;
+
 -- RedefineTables
 PRAGMA defer_foreign_keys=ON;
 PRAGMA foreign_keys=OFF;

@@ -75,12 +75,7 @@ describe("Category (e2e)", () => {
 
     const { createCategory } = await gql<{
       createCategory: { id: string; name: string; color: string; icon: string };
-    }>(
-      url,
-      CREATE_CATEGORY,
-      { name: "Mercado", color: "#16a34a", icon: "ShoppingCart" },
-      token,
-    );
+    }>(url, CREATE_CATEGORY, { name: "Mercado", color: "#16a34a", icon: "ShoppingCart" }, token);
 
     expect(createCategory.id).toEqual(expect.any(String));
     expect(createCategory.name).toBe("Mercado");

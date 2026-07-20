@@ -11,8 +11,9 @@ describe("ListCategoriesCountTransactionsUseCase", () => {
   beforeEach(() => {
     transactionRepository = new InMemoryTransactionRepository();
     categoryRepository = new InMemoryCategoryRepository(transactionRepository);
-    listCategoriesCountTransactionsUseCase =
-      new ListCategoriesCountTransactionsUseCase(categoryRepository);
+    listCategoriesCountTransactionsUseCase = new ListCategoriesCountTransactionsUseCase(
+      categoryRepository,
+    );
   });
 
   it("should return each category with its transactions count", async () => {
@@ -48,15 +49,11 @@ describe("ListCategoriesCountTransactionsUseCase", () => {
       categoryId: compras.id,
     });
 
-    const { categories } = await listCategoriesCountTransactionsUseCase.execute(
-      {
-        userId: "21",
-      },
-    );
+    const { categories } = await listCategoriesCountTransactionsUseCase.execute({
+      userId: "21",
+    });
 
-    const comprasResult = categories.find(
-      (category) => category.id === compras.id,
-    );
+    const comprasResult = categories.find((category) => category.id === compras.id);
     const lazerResult = categories.find((category) => category.id === lazer.id);
 
     expect(comprasResult?.transactionsCount).toEqual(2);
@@ -64,11 +61,9 @@ describe("ListCategoriesCountTransactionsUseCase", () => {
   });
 
   it("should return an empty list when the user has no categories", async () => {
-    const { categories } = await listCategoriesCountTransactionsUseCase.execute(
-      {
-        userId: "sem-categorias",
-      },
-    );
+    const { categories } = await listCategoriesCountTransactionsUseCase.execute({
+      userId: "sem-categorias",
+    });
 
     expect(categories).toEqual([]);
   });
