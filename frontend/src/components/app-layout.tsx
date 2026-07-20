@@ -19,10 +19,15 @@ export function AppLayout() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="flex items-center justify-between border-b border-gray-200 bg-white px-8 py-4">
-        <img src={logo} alt="Financy" className="h-6 ml-3.5" />
+      <header
+        className={`flex flex-wrap items-center justify-between gap-y-3 border-b 
+        border-gray-200 bg-white px-4 py-4 sm:px-8`}
+      >
+        <img src={logo} alt="Financy" className="h-6" />
 
-        <nav className="flex items-center gap-5">
+        <nav
+          className={`order-last flex w-full items-center justify-between gap-5 sm:order-0 sm:w-auto sm:justify-normal`}
+        >
           <NavLink to="/" end className={({ isActive }) => navLinkVariants({ isActive })}>
             Dashboard
           </NavLink>
@@ -39,7 +44,7 @@ export function AppLayout() {
         </div>
       </header>
 
-      <main className="p-12">
+      <main className="px-4 py-4 sm:px-12">
         <Outlet />
       </main>
     </div>

@@ -16,7 +16,9 @@ describe("DeleteCategoryUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
+      description: null,
+      icon: "ShoppingCart",
     });
 
     await deleteCategoryUseCase.execute({ id: category.id, userId: "21" });
@@ -35,7 +37,9 @@ describe("DeleteCategoryUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
+      description: null,
+      icon: "ShoppingCart",
     });
 
     await expect(() =>

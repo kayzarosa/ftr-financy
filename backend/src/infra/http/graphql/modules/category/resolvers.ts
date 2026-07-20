@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 import { makeCreateCategoryUseCase } from "@/infra/factories/category/make-create-category-use-case.js";
 import { makeDeleteCategoryUseCase } from "@/infra/factories/category/make-delete-category-use-case.js";
+import { makeListCategoriesCountTransactionsUseCase } from "@/infra/factories/category/make-list-categories-count-transactions-use-case.js";
 import { makeListCategoriesUseCase } from "@/infra/factories/category/make-list-categories-use-case.js";
 import { makeUpdateCategoryUseCase } from "@/infra/factories/category/make-update-category-use-case.js";
 import type { GraphQLContext } from "@/infra/http/graphql/context.js";
@@ -13,13 +14,17 @@ import { CategoryNotFoundError } from "@/use-cases/errors/category-not-found-err
 
 const createCategorySchema = z.object({
   name: z.string().min(1, "Nome não pode ser vazio"),
-  color: z.string().min(3, "A cor deve ter no mínimo 3 caracteres").optional(),
+  color: z.string().min(3, "A cor deve ter no mínimo 3 caracteres"),
+  description: z.string().optional(),
+  icon: z.string(),
 });
 
 const updateCategorySchema = z.object({
   id: z.string(),
   name: z.string().min(1, "Nome não pode ser vazio").optional(),
   color: z.string().min(3, "A cor deve ter no mínimo 3 caracteres").optional(),
+  description: z.string().optional(),
+  icon: z.string().optional(),
 });
 
 const deleteCategorySchema = z.object({
@@ -39,12 +44,26 @@ export const categoryResolvers = {
 
       return categories;
     },
+
+    categoriesCountTransactions: async (
+      _: unknown,
+      _args: unknown,
+      context: GraphQLContext,
+    ) => {
+      const userId = ensureAuthenticated(context);
+
+      const { categories } = await makeListCategoriesCountTransactionsUseCase().execute({
+        userId,
+      });
+
+      return categories;
+    },
   },
 
   Mutation: {
     createCategory: async (
       _: unknown,
-      args: { name: string; color?: string },
+      args: { name: string; color: string; description?: string; icon: string },
       context: GraphQLContext,
     ) => {
       try {
@@ -70,7 +89,7 @@ export const categoryResolvers = {
 
     updateCategory: async (
       _: unknown,
-      args: { id: string; name?: string; color?: string },
+      args: { id: string; name?: string; color?: string; description?: string; icon?: string },
       context: GraphQLContext,
     ) => {
       try {

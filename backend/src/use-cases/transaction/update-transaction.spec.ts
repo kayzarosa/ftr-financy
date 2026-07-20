@@ -24,6 +24,8 @@ describe("UpdateTransactionUseCase", () => {
     const category = await categoryRepository.create({
       color: "#9d0456",
       name: "Compras",
+      description: null,
+      icon: "ShoppingCart",
       userId: "1a",
     });
 
@@ -76,6 +78,8 @@ describe("UpdateTransactionUseCase", () => {
     const category = await categoryRepository.create({
       color: "#9d0456",
       name: "Mercado",
+      description: null,
+      icon: "ShoppingCart",
       userId: "1a",
     });
 
@@ -101,6 +105,8 @@ describe("UpdateTransactionUseCase", () => {
     const category = await categoryRepository.create({
       color: "#9d0456",
       name: "Compras",
+      description: null,
+      icon: "ShoppingCart",
       userId: "1a",
     });
 

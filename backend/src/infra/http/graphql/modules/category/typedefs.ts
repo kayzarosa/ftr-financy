@@ -8,9 +8,15 @@ export const categoryTypeDefs = `#graphql
     "Nome da categoria. Único por usuário."
     name: String!
     "Cor de exibição da categoria, em hexadecimal."
-    color: String
+    color: String!
+    "Descrição livre da categoria."
+    description: String
+    "Nome do ícone (Lucide) escolhido pra representar a categoria."
+    icon: String!
     "Data de criação, em formato ISO 8601."
     createdAt: String!
+    "Quantidade de transações vinculadas a essa categoria. Só vem preenchido quando consultado via categoriesCountTransactions."
+    transactionsCount: Int
   }
 
   extend type Mutation {
@@ -18,13 +24,19 @@ export const categoryTypeDefs = `#graphql
     Cria uma nova categoria
     Requer header Authorization com um accessToken válido.
     """
-    createCategory(name: String!, color: String): Category!
+    createCategory(name: String!, color: String!, description: String, icon: String!): Category!
 
     """
     Altera uma categoria existente vinculada ao usuário
     Requer header Authorization com um accessToken válido.
     """
-    updateCategory(id: ID!, name: String, color: String): Category!
+    updateCategory(
+      id: ID!
+      name: String
+      color: String
+      description: String
+      icon: String
+    ): Category!
 
     """
     Remove uma categoria vinculada ao usuário.
@@ -40,5 +52,11 @@ export const categoryTypeDefs = `#graphql
     Requer header Authorization com um accessToken válido.
     """
     categories: [Category!]!
+
+    """
+    Lista todas as categorias do usuário autenticado, com a quantidade de transações de cada uma.
+    Requer header Authorization com um accessToken válido.
+    """
+    categoriesCountTransactions: [Category!]!
   }
 `;

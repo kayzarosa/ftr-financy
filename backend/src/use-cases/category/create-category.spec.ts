@@ -17,6 +17,7 @@ describe("CreateCategoryUseCase", () => {
       name: "Compras",
       userId: "23",
       color: "#dd9939",
+      icon: "ShoppingCart",
     });
 
     expect(category.id).toEqual(expect.any(String));
@@ -27,6 +28,8 @@ describe("CreateCategoryUseCase", () => {
     await createCategoryUseCase.execute({
       name: "Compras",
       userId: "23",
+      color: "#dd9939",
+      icon: "ShoppingCart",
     });
 
     await expect(() =>
@@ -34,6 +37,7 @@ describe("CreateCategoryUseCase", () => {
         name: "Compras",
         userId: "23",
         color: "#dd9939",
+        icon: "ShoppingCart",
       }),
     ).rejects.toBeInstanceOf(CategoryAlreadyExistsError);
   });

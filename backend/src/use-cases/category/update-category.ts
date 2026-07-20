@@ -5,14 +5,16 @@ import { CategoryNotFoundError } from "../errors/category-not-found-error.js";
 type UpdateCategoryRequest = {
   id: string;
   name?: string | undefined;
-  color?: string | null | undefined;
+  color?: string | undefined;
+  description?: string | null | undefined;
+  icon?: string | undefined;
   userId: string;
 };
 
 export class UpdateCategoryUseCase {
   constructor(private categoryRepository: ICategoryRepository) {}
 
-  async execute({ id, userId, color, name }: UpdateCategoryRequest) {
+  async execute({ id, userId, color, name, description, icon }: UpdateCategoryRequest) {
     const categoryExists = await this.categoryRepository.findById(id);
 
     if (!categoryExists || categoryExists.userId !== userId) {
@@ -30,6 +32,8 @@ export class UpdateCategoryUseCase {
     const category = await this.categoryRepository.update(id, {
       ...(name !== undefined && { name }),
       ...(color !== undefined && { color }),
+      ...(description !== undefined && { description }),
+      ...(icon !== undefined && { icon }),
     });
 
     return { category };

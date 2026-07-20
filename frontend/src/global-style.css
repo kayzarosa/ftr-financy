@@ -22,6 +22,34 @@
 
   --color-danger: #ef4444;
   --color-success: #19ad70;
+
+  --color-blue-dark: #1d4ed8;
+  --color-blue-base: #2563eb;
+  --color-blue-light: #dbeafe;
+
+  --color-purple-dark: #7e22ce;
+  --color-purple-base: #9333ea;
+  --color-purple-light: #f3e8ff;
+
+  --color-pink-dark: #be185d;
+  --color-pink-base: #db2777;
+  --color-pink-light: #fce7f3;
+
+  --color-red-dark: #b91c1c;
+  --color-red-base: #dc2626;
+  --color-red-light: #fee2e2;
+
+  --color-orange-dark: #c2410c;
+  --color-orange-base: #ea580c;
+  --color-orange-light: #ffedd5;
+
+  --color-yellow-dark: #a16207;
+  --color-yellow-base: #ca8a04;
+  --color-yellow-light: #fef9c3;
+
+  --color-green-dark: #15803d;
+  --color-green-base: #16a34a;
+  --color-green-light: #dcfce7;
 }
 
 @layer base {

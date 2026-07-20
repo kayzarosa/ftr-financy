@@ -37,6 +37,8 @@ describe("CreateTransactionUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       color: "#091345",
+      description: null,
+      icon: "ShoppingCart",
       userId: user.id,
     });
 
