@@ -25,7 +25,7 @@ describe("UpdateTransactionUseCase", () => {
       color: "#9d0456",
       name: "Compras",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
       userId: "1a",
     });
 
@@ -79,7 +79,7 @@ describe("UpdateTransactionUseCase", () => {
       color: "#9d0456",
       name: "Mercado",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
       userId: "1a",
     });
 
@@ -106,7 +106,7 @@ describe("UpdateTransactionUseCase", () => {
       color: "#9d0456",
       name: "Compras",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
       userId: "1a",
     });
 

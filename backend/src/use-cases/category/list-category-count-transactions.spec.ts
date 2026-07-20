@@ -19,16 +19,16 @@ describe("ListCategoriesCountTransactionsUseCase", () => {
     const compras = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
     const lazer = await categoryRepository.create({
       name: "Lazer",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     await transactionRepository.create({

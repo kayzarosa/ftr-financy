@@ -11,9 +11,9 @@ export interface ICategoryRepository {
     id: string,
     data: {
       name?: string;
-      color?: string | null;
+      color?: string;
       description?: string | null;
-      icon?: string | null;
+      icon?: string;
     },
   ): Promise<Category>;
   delete(id: string): Promise<void>;

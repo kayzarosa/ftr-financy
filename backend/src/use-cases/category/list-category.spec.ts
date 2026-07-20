@@ -15,23 +15,23 @@ describe("ListCategoriesUseCase", () => {
     await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
     await categoryRepository.create({
       name: "Lazer",
       userId: "21",
       color: "#3498db",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
     await categoryRepository.create({
       name: "Outro usuário",
       userId: "99",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     const { categories } = await listCategoriesUseCase.execute({

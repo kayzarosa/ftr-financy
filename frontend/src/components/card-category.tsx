@@ -1,5 +1,5 @@
 import { type LucideIcon, SquarePen, Trash } from "lucide-react";
-import { Button } from "./ui/button";
+import { IconButton } from "./ui/icon-button";
 
 type Category = {
   transactionsCount: number;
@@ -41,23 +41,19 @@ export function CardCategory({
         </div>
 
         <div className="flex gap-2 top-0">
-          <Button
-            variant="outline"
-            size="icon"
+          <IconButton
             aria-label="Excluir categoria"
             onClick={() => deleteCategory(category.id)}
           >
             <Trash className="size-4 text-danger" />
-          </Button>
+          </IconButton>
 
-          <Button
-            variant="outline"
-            size="icon"
+          <IconButton
             aria-label="Alterar categoria"
             onClick={() => editCategory(category)}
           >
             <SquarePen className="size-4 text-gray-700" />
-          </Button>
+          </IconButton>
         </div>
       </div>
 

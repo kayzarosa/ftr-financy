@@ -38,7 +38,7 @@ describe("CreateTransactionUseCase", () => {
       name: "Compras",
       color: "#091345",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
       userId: user.id,
     });
 

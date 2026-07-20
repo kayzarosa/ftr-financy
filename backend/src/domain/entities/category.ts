@@ -1,9 +1,9 @@
 export interface Category {
   id: string;
   name: string;
-  color: string | null;
+  color: string;
   description: string | null;
-  icon: string | null;
+  icon: string;
   userId: string;
   createdAt: Date;
   updatedAt: Date;

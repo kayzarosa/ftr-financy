@@ -14,9 +14,9 @@ import { CategoryNotFoundError } from "@/use-cases/errors/category-not-found-err
 
 const createCategorySchema = z.object({
   name: z.string().min(1, "Nome não pode ser vazio"),
-  color: z.string().min(3, "A cor deve ter no mínimo 3 caracteres").optional(),
+  color: z.string().min(3, "A cor deve ter no mínimo 3 caracteres"),
   description: z.string().optional(),
-  icon: z.string().optional(),
+  icon: z.string(),
 });
 
 const updateCategorySchema = z.object({
@@ -63,7 +63,7 @@ export const categoryResolvers = {
   Mutation: {
     createCategory: async (
       _: unknown,
-      args: { name: string; color?: string; description?: string; icon?: string },
+      args: { name: string; color: string; description?: string; icon: string },
       context: GraphQLContext,
     ) => {
       try {

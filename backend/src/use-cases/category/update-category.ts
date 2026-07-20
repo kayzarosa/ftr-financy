@@ -5,9 +5,9 @@ import { CategoryNotFoundError } from "../errors/category-not-found-error.js";
 type UpdateCategoryRequest = {
   id: string;
   name?: string | undefined;
-  color?: string | null | undefined;
+  color?: string | undefined;
   description?: string | null | undefined;
-  icon?: string | null | undefined;
+  icon?: string | undefined;
   userId: string;
 };
 

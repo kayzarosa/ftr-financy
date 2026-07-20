@@ -17,9 +17,9 @@ describe("UpdateCategoryUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     expect(category.id).toEqual(expect.any(String));
@@ -52,17 +52,17 @@ describe("UpdateCategoryUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     const category2 = await categoryRepository.create({
       name: "Compras1",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     expect(category.id).toEqual(expect.any(String));
@@ -82,9 +82,9 @@ describe("UpdateCategoryUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     await expect(() =>
@@ -103,9 +103,9 @@ describe("UpdateCategoryUseCase", () => {
     const category = await categoryRepository.create({
       name: "Compras",
       userId: "21",
-      color: null,
+      color: "#000000",
       description: null,
-      icon: null,
+      icon: "ShoppingCart",
     });
 
     const { category: updatedCategory } = await updateCategoryUseCase.execute({

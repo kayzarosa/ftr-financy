@@ -6,7 +6,7 @@ export default defineConfig({
   },
   test: {
     setupFiles: ["./vitest.setup.ts"],
-    exclude: ["**/node_modules/**", "**/dist/**"],
+    exclude: ["**/node_modules/**", "**/dist/**", "**/*.e2e.spec.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],

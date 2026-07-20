@@ -8,11 +8,11 @@ export const categoryTypeDefs = `#graphql
     "Nome da categoria. Único por usuário."
     name: String!
     "Cor de exibição da categoria, em hexadecimal."
-    color: String
+    color: String!
     "Descrição livre da categoria."
     description: String
     "Nome do ícone (Lucide) escolhido pra representar a categoria."
-    icon: String
+    icon: String!
     "Data de criação, em formato ISO 8601."
     createdAt: String!
     "Quantidade de transações vinculadas a essa categoria. Só vem preenchido quando consultado via categoriesCountTransactions."
@@ -24,7 +24,7 @@ export const categoryTypeDefs = `#graphql
     Cria uma nova categoria
     Requer header Authorization com um accessToken válido.
     """
-    createCategory(name: String!, color: String, description: String, icon: String): Category!
+    createCategory(name: String!, color: String!, description: String, icon: String!): Category!
 
     """
     Altera uma categoria existente vinculada ao usuário

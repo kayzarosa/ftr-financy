@@ -3,9 +3,9 @@ import { CategoryAlreadyExistsError } from "../errors/category-already-exists-er
 
 type CreateCategoryRequest = {
   name: string;
-  color?: string | undefined;
+  color: string;
   description?: string | undefined;
-  icon?: string | undefined;
+  icon: string;
   userId: string;
 };
 
@@ -21,9 +21,9 @@ export class CreateCategoryUseCase {
 
     const category = await this.categoryRepository.create({
       name,
-      color: color ?? null,
+      color,
       description: description ?? null,
-      icon: icon ?? null,
+      icon,
       userId,
     });
 

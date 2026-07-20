@@ -11,6 +11,7 @@ export const buttonVariants = tv({
       primary: "text-white bg-brand-base hover:bg-brand-dark",
       secondary: "text-gray-800 bg-gray-100 hover:bg-gray-200",
       outline: "text-gray-700 bg-white border border-gray-300 hover:bg-gray-100",
+      iconButton: "text-gray-700 bg-white border border-gray-300 hover:bg-gray-200",
       link: "text-brand-base font-medium hover:underline",
     },
     size: {

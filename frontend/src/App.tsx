@@ -6,6 +6,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { useAuthStore } from "./stores/auth-store";
+import { Transactions } from "./pages/TransactionsPage";
 
 export function App() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -16,7 +17,7 @@ export function App() {
         {accessToken ? (
           <Route element={<AppLayout />}>
             <Route path="/" element={<div>Dashboard</div>} />
-            <Route path="/transacoes" element={<div>Transações</div>} />
+            <Route path="/transacoes" element={<Transactions />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route path="/usuario" element={<ProfilePage />} />
           </Route>
