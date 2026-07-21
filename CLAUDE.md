@@ -149,18 +149,23 @@ src/
   main.tsx           # entry — mounts QueryClientProvider > BrowserRouter > App
   App.tsx            # route table + Toast.Provider; auth-gated routing (see below)
   pages/             # one component per route: Login, SignUp, Categories, Transactions, Profile
-  components/
-    app-layout.tsx   # authenticated shell (Outlet) — nav + page frame
-    *.tsx            # feature pieces: card-category, dialogs (upsert-category, change-password, confirm), page-header, empty state
+  components/         # grouped by domain, mirroring the backend's vertical slices
     ui/              # reusable primitives: button, input, select, dialog, icon-button, toast, etc.
-  hooks/             # React Query mutation hooks, one per API operation (use-sign-in, use-create-categories, …)
-  lib/
-    env.ts           # Zod-validated import.meta.env (VITE_BACKEND_URL) — single source of truth
-    graphql-client.ts   # graphql-request client pointed at the API
-    graphql-request.ts  # request() wrapper with the auth/refresh flow (see below)
-    query-client.ts     # the shared QueryClient instance
-    category-colors.ts / category-icons.ts   # the fixed palettes/icon sets a category can use
-    get-error-message.ts / get-initials.ts / utils.ts   # small helpers
+    shared/          # cross-cutting, domain-agnostic: app-layout (auth shell), page-header, confirm-dialog
+    category/        # card-category, category-select, icon-category, tag-category, empty-state, upsert dialog
+    transaction/     # transactions-body/header/footer, type-transaction, empty-state, upsert dialog
+    user/            # change-password-dialog
+  hooks/             # React Query hooks, one per API operation — grouped by domain
+    auth/            # use-sign-in, use-sign-up, use-logout
+    category/        # use-categories-list, use-create/update/delete-categor(y|ies), use-categories-count-transaction
+    transaction/     # use-transactions, use-transactions-count, use-create/update/delete-transaction
+    user/            # use-update-user, use-update-password
+  lib/               # infra + shared utilities — grouped by kind (not domain; only the category constants are domain-specific)
+    env.ts           # Zod-validated import.meta.env (VITE_BACKEND_URL) — single source of truth (stays at lib root)
+    api/             # graphql-client, graphql-request (auth/refresh flow — see below), query-client
+    format/          # format-currency, format-date, get-period (month-picker options)
+    helpers/         # get-error-message, get-initials, utils (cn())
+    constants/       # category-colors, category-icons — the fixed palettes/icon sets a category can use
   stores/
     auth-store.ts    # Zustand store, persisted to localStorage under "financy-auth"
 ```
@@ -172,5 +177,5 @@ src/
 ### Auth token flow
 
 - The store (`stores/auth-store.ts`) holds `{ accessToken, refreshToken, user }`, persisted via Zustand's `persist` middleware (key `financy-auth`) so a reload stays logged in. `setAuth` replaces the trio, `updateUser` patches the cached user, `logout` clears everything.
-- `lib/graphql-request.ts` wraps every GraphQL call. On an `UNAUTHENTICATED` error it transparently calls the `refreshToken` mutation **once** (concurrent calls share a single in-flight `refreshing` promise so N failed requests trigger one refresh, not N), stores the rotated pair, and retries the original request. If there's no refresh token or the refresh itself fails, it signs out (`store.logout()` + `queryClient.clear()`) and rethrows. This mirrors the backend's stateful rotating-refresh-token design.
-- `lib/graphql-request.ts` intentionally does **not** `navigate()` on sign-out (there's a JSDoc there explaining why) — routing reacts to the store change instead. That JSDoc is the user's; leave it.
+- `lib/api/graphql-request.ts` wraps every GraphQL call. On an `UNAUTHENTICATED` error it transparently calls the `refreshToken` mutation **once** (concurrent calls share a single in-flight `refreshing` promise so N failed requests trigger one refresh, not N), stores the rotated pair, and retries the original request. If there's no refresh token or the refresh itself fails, it signs out (`store.logout()` + `queryClient.clear()`) and rethrows. This mirrors the backend's stateful rotating-refresh-token design.
+- `lib/api/graphql-request.ts` intentionally does **not** `navigate()` on sign-out (there's a JSDoc there explaining why) — routing reacts to the store change instead. That JSDoc is the user's; leave it.

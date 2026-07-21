@@ -1,12 +1,12 @@
 import * as Toast from "@radix-ui/react-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { AppLayout } from "./components/app-layout";
+import { AppLayout } from "./components/shared/app-layout";
 import { CategoriesPage } from "./pages/CategoriesPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SignUpPage } from "./pages/SignUpPage";
-import { useAuthStore } from "./stores/auth-store";
 import { Transactions } from "./pages/TransactionsPage";
+import { useAuthStore } from "./stores/auth-store";
 
 export function App() {
   const accessToken = useAuthStore((state) => state.accessToken);

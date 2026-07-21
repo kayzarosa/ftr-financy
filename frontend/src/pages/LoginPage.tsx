@@ -8,8 +8,8 @@ import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import { useSignIn } from "@/hooks/use-sign-in";
-import { getErrorMessage } from "@/lib/get-error-message";
+import { useSignIn } from "@/hooks/auth/use-sign-in";
+import { getErrorMessage } from "@/lib/helpers/get-error-message";
 import { useAuthStore } from "@/stores/auth-store";
 
 const loginSchema = z.object({

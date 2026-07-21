@@ -1,7 +1,7 @@
 import { Radio } from "@base-ui/react/radio";
 import { RadioGroup } from "@base-ui/react/radio-group";
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
 type OptionPickerProps<T extends string> = {
   label: string;

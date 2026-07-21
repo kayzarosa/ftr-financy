@@ -1,25 +1,25 @@
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CategorySelect } from "@/components/category-select";
-import { PageHeader } from "@/components/page-header";
-import { TransactionsEmptyState } from "@/components/transactions-empty-state";
-import { TransactionsFooter } from "@/components/transactions-footer";
-import { TransactionsHeader } from "@/components/transactions-header";
+import { CategorySelect } from "@/components/category/category-select";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { PageHeader } from "@/components/shared/page-header";
+import { TransactionsBody } from "@/components/transaction/transactions-body";
+import { TransactionsEmptyState } from "@/components/transaction/transactions-empty-state";
+import { TransactionsFooter } from "@/components/transaction/transactions-footer";
+import { TransactionsHeader } from "@/components/transaction/transactions-header";
+import {
+  type Transaction,
+  UpSertTransactionDialog,
+} from "@/components/transaction/upsert-transaction-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SelectField } from "@/components/ui/select-field";
-import {
-  UpSertTransactionDialog,
-  type Transaction,
-} from "@/components/upsert-transaction-dialog";
-import { useTransactions } from "@/hooks/use-transactions";
-import { useTransactionsCount } from "@/hooks/use-transactions-count";
-import { getPeriodOptions } from "@/lib/get-period";
-import { TransactionsBody } from "@/components/transactions-body";
-import { ConfirmDialog } from "@/components/confirm-dialog";
-import { getErrorMessage } from "@/lib/get-error-message";
-import { useDeleteTransaction } from "@/hooks/use-delete-transaction";
 import { NotificationToast } from "@/components/ui/notification-toast";
+import { SelectField } from "@/components/ui/select-field";
+import { useDeleteTransaction } from "@/hooks/transaction/use-delete-transaction";
+import { useTransactions } from "@/hooks/transaction/use-transactions";
+import { useTransactionsCount } from "@/hooks/transaction/use-transactions-count";
+import { getPeriodOptions } from "@/lib/format/get-period";
+import { getErrorMessage } from "@/lib/helpers/get-error-message";
 
 export function Transactions() {
   type TransactionFilter = "all" | "INCOME" | "EXPENSE";
@@ -37,14 +37,11 @@ export function Transactions() {
   const [period, setPeriod] = useState(monthOptions[0].value);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [openUpsetTransaction, setOpenUpsetTransaction] = useState(false);
-  const [editingTransaction, setEditingTransaction] =
-    useState<Transaction | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [deleteTransactionId, setDeleteTransactionId] = useState("");
   const [toastOpen, setToastOpen] = useState(false);
   const [toastDescription, setToastDescription] = useState("");
-  const [toastVariant, setToastVariant] = useState<"success" | "error">(
-    "success",
-  );
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
   const { mutate: removeTransaction } = useDeleteTransaction();
 
   const [page, setPage] = useState(1);
@@ -95,10 +92,7 @@ export function Transactions() {
   return (
     <>
       <div className="flex flex-col gap-8">
-        <PageHeader
-          title="Transações"
-          description="Gerencie todas as suas transações financeiras"
-        >
+        <PageHeader title="Transações" description="Gerencie todas as suas transações financeiras">
           <Button
             variant="primary"
             onClick={() => {
@@ -124,12 +118,7 @@ export function Transactions() {
               onChange={(event) => setSearch(event.target.value)}
             />
 
-            <SelectField
-              label="Tipo"
-              value={type}
-              onValueChange={setType}
-              options={typeOptions}
-            />
+            <SelectField label="Tipo" value={type} onValueChange={setType} options={typeOptions} />
 
             <CategorySelect
               label="Categoria"
@@ -149,9 +138,7 @@ export function Transactions() {
 
         <div>
           {total <= 0 ? (
-            <TransactionsEmptyState
-              openCreateTransaction={() => setOpenUpsetTransaction(true)}
-            />
+            <TransactionsEmptyState openCreateTransaction={() => setOpenUpsetTransaction(true)} />
           ) : (
             <>
               <TransactionsHeader />
@@ -163,7 +150,7 @@ export function Transactions() {
                     setOpenUpsetTransaction(true);
                   }}
                   onDelete={() => {
-                    openDialogConfirmDelete(transaction.id)
+                    openDialogConfirmDelete(transaction.id);
                   }}
                   key={transaction.id}
                   id={transaction.id}

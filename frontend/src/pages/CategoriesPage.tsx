@@ -1,27 +1,20 @@
 import { ArrowUpDown, CircleDashed, Plus, Tag } from "lucide-react";
 import { useState } from "react";
-import { CardCategory } from "@/components/card-category";
-import { CategoriesEmptyState } from "@/components/categories-empty-state";
-import { ConfirmDialog } from "@/components/confirm-dialog";
-import { PageHeader } from "@/components/page-header";
+import { CardCategory } from "@/components/category/card-category";
+import { CategoriesEmptyState } from "@/components/category/categories-empty-state";
+import { type Category, UpSertCategoryDialog } from "@/components/category/upsert-category-dialog";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { CardInfo } from "@/components/ui/card-info";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import {
-  type Category,
-  UpSertCategoryDialog,
-} from "@/components/upsert-category-dialog";
-import { useCategoriesCountTransactions } from "@/hooks/use-categories-count-transaction";
-import { useDeleteCategory } from "@/hooks/use-delete-category";
-import { getCategoryIcon } from "@/lib/category-icons";
-import { getErrorMessage } from "@/lib/get-error-message";
+import { useCategoriesCountTransactions } from "@/hooks/category/use-categories-count-transaction";
+import { useDeleteCategory } from "@/hooks/category/use-delete-category";
+import { getCategoryIcon } from "@/lib/constants/category-icons";
+import { getErrorMessage } from "@/lib/helpers/get-error-message";
 
 export function CategoriesPage() {
-  const {
-    data: categories,
-    isLoading,
-    error,
-  } = useCategoriesCountTransactions();
+  const { data: categories, isLoading, error } = useCategoriesCountTransactions();
   const { mutate: removeCategory } = useDeleteCategory();
   const [upsetCategoryOpen, setUpsetCategoryOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -29,28 +22,21 @@ export function CategoriesPage() {
   const [idCategoryDelete, setIdCategoryDelete] = useState("");
   const [toastOpen, setToastOpen] = useState(false);
   const [toastDescription, setToastDescription] = useState("");
-  const [toastVariant, setToastVariant] = useState<"success" | "error">(
-    "success",
-  );
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
 
   function handleUpsertOpenChange(open: boolean) {
     setUpsetCategoryOpen(open);
     if (!open) setEditingCategory(null);
   }
 
-  const totalTransactions =
-    categories?.reduce((sum, c) => sum + c.transactionsCount, 0) ?? 0;
+  const totalTransactions = categories?.reduce((sum, c) => sum + c.transactionsCount, 0) ?? 0;
 
   const mostUsedCategory =
     totalTransactions === 0
       ? null
-      : categories?.reduce((most, c) =>
-          c.transactionsCount > most.transactionsCount ? c : most,
-        );
+      : categories?.reduce((most, c) => (c.transactionsCount > most.transactionsCount ? c : most));
 
-  const MostUsedIcon = !mostUsedCategory
-    ? CircleDashed
-    : getCategoryIcon(mostUsedCategory.icon);
+  const MostUsedIcon = !mostUsedCategory ? CircleDashed : getCategoryIcon(mostUsedCategory.icon);
 
   function openCreateCategory() {
     setEditingCategory(null);
@@ -88,10 +74,7 @@ export function CategoriesPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader
-        title="Categorias"
-        description="Organize suas transações por categorias"
-      >
+      <PageHeader title="Categorias" description="Organize suas transações por categorias">
         <Button variant="primary" onClick={openCreateCategory}>
           <Plus className="size-4" />
           Nova Categoria
@@ -134,9 +117,7 @@ export function CategoriesPage() {
       )}
 
       {error && (
-        <p className="text-danger">
-          Não foi possível carregar as categorias. Tente novamente.
-        </p>
+        <p className="text-danger">Não foi possível carregar as categorias. Tente novamente.</p>
       )}
 
       <section className="flex flex-wrap gap-4">

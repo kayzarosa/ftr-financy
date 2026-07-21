@@ -5,14 +5,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
-import { ChangePasswordDialog } from "@/components/change-password-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import { useLogout } from "@/hooks/use-logout";
-import { useUpdateUser } from "@/hooks/use-update-user";
-import { getErrorMessage } from "@/lib/get-error-message";
-import { getInitials } from "@/lib/get-initials";
+import { ChangePasswordDialog } from "@/components/user/change-password-dialog";
+import { useLogout } from "@/hooks/auth/use-logout";
+import { useUpdateUser } from "@/hooks/user/use-update-user";
+import { getErrorMessage } from "@/lib/helpers/get-error-message";
+import { getInitials } from "@/lib/helpers/get-initials";
 import { useAuthStore } from "@/stores/auth-store";
 
 const updateUserSchema = z.object({

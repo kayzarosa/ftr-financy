@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/helpers/utils";
 
 type SelectFieldOption<T extends string> = {
   value: T;
