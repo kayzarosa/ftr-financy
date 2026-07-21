@@ -57,11 +57,23 @@ export const transactionTypeDefs = `#graphql
     deleteTransaction(id: ID!): Boolean!
   }
 
+  type TransactionsResult {
+    items: [Transaction!]!
+    total: Int!
+  }
+
   extend type Query {
     """
     Lista todas as transações do usuário autenticado.
     Requer header Authorization com um accessToken válido.
     """
-    transactions: [Transaction!]!
+    transactions(
+      page: Int
+      limit: Int
+      type: TransactionType
+      categoryId: ID
+      search: String
+      month: String
+    ): TransactionsResult!
   }
 `;

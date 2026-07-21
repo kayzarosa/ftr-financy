@@ -6,8 +6,8 @@ const CREATE_CATEGORY = gql`
   mutation CreateCategory(
     $name: String!
     $description: String
-    $icon: String
-    $color: String
+    $icon: String!
+    $color: String!
   ) {
     createCategory(
       name: $name
@@ -50,6 +50,7 @@ export function useCreateCategory() {
       queryClient.invalidateQueries({
         queryKey: ["categoriesCountTransactions"],
       });
+      queryClient.invalidateQueries({ queryKey: ["categoriesList"] });
     },
   });
 }

@@ -15,8 +15,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Financy is a fullstack finance-tracking app built for a graduate-level challenge, split into two independent projects in one repo:
 
-- `backend/` — GraphQL API (TypeScript, Fastify, Apollo Server, Prisma, SQLite). Auth and category CRUD are implemented and working end-to-end; transaction CRUD is not started.
-- `frontend/` — React app (Vite, GraphQL client). Not started yet — empty directory.
+- `backend/` — GraphQL API (TypeScript, Fastify, Apollo Server, Prisma, SQLite). Auth, category, and transaction CRUD are all implemented and working end-to-end (with unit specs). The one gap: the `transactions` query still returns every transaction — pagination and filters (type, category, search-by-name, month) are being added to it.
+- `frontend/` — React app (Vite, TypeScript, GraphQL). Auth (sign-up/sign-in/logout with token refresh), the app shell/layout, category CRUD, and the profile/password screens are built and wired to the API. The dashboard route (`/`) and the transactions screen are still placeholders — transaction CRUD isn't done on either side yet.
 
 There is no root-level `package.json`; each side is set up and run independently from its own folder. Package manager is **pnpm** everywhere.
 
@@ -40,6 +40,19 @@ pnpm exec prisma generate                      # regenerate the Prisma Client
 ```
 
 Test the API manually with `insomnia_export.json` (import via Insomnia → Import Data → From File). It has a "Base Environment" with `base_url`/`accessToken`/`refreshToken` variables — run `signUp` or `signIn`, paste the returned tokens into the environment (raw value, no surrounding quotes), and every authenticated request picks them up automatically via `Authorization: Bearer {{ _.accessToken }}`.
+
+## Commands (run from `frontend/`)
+
+```bash
+pnpm dev              # vite — dev server
+pnpm build            # tsc -b && vite build
+pnpm preview          # vite preview — serve the production build locally
+
+pnpm lint             # biome check .
+pnpm format           # biome check --write .
+```
+
+The front reads the API URL from `VITE_BACKEND_URL` (see `.env.example`), parsed through `src/lib/env.ts`. Start the backend (`pnpm dev` in `backend/`) before the front so GraphQL requests have something to hit.
 
 ### pnpm build-script approval gotcha
 
@@ -76,7 +89,7 @@ src/
   generated/prisma/           # Prisma Client output — never edit, regenerated from schema.prisma
 ```
 
-Every domain area (`auth`, `user`, `category`) follows the same vertical slice: `domain/entities/*` → `domain/repositories/*` (interface + in-memory fake) → `use-cases/<area>/*` (+ `.spec.ts`) → `infra/database/prisma/repositories/*` (adapter) → `infra/factories/make-*` → `infra/http/graphql/modules/<area>/*`. Replicate this exact shape for `transaction`, the remaining domain.
+Every domain area (`auth`, `user`, `category`, `transaction`) follows the same vertical slice: `domain/entities/*` → `domain/repositories/*` (interface + in-memory fake) → `use-cases/<area>/*` (+ `.spec.ts`) → `infra/database/prisma/repositories/*` (adapter) → `infra/factories/make-*` → `infra/http/graphql/modules/<area>/*`. Keep this exact shape when extending any domain — e.g. adding pagination/filters to `transactions` means changing the repository *port* (`findManyByUserId`'s signature) first, which the compiler then forces you to update in both the Prisma and in-memory adapters and the use-case specs.
 
 ### Auth & authorization design
 
@@ -124,3 +137,40 @@ Both use the `@/*` → `./src/*` path alias (imports still need the `.js` extens
 ### Linting/formatting
 
 Biome (not ESLint/Prettier) handles both, configured in `biome.json`. `organizeImports` is on, so import order is auto-managed — don't hand-sort imports.
+
+## Frontend architecture
+
+React 19 + Vite 8 + TypeScript, styled with **TailwindCSS v4** (via `@tailwindcss/vite`, no `tailwind.config` — theme lives in `global-style.css`). `@/*` aliases `./src/*`. Biome handles lint/format here too (`biome.json`), same as the backend.
+
+Key libraries: **TanStack React Query** (server state), **graphql-request** (GraphQL client), **react-hook-form + Zod** (forms/validation), **Zustand** (auth state, persisted), **react-router-dom v7** (routing), **@radix-ui** + **@base-ui/react** (dialog/toast primitives), **lucide-react** (icons), `tailwind-variants`/`tailwind-merge`/`clsx` (variant styling).
+
+```
+src/
+  main.tsx           # entry — mounts QueryClientProvider > BrowserRouter > App
+  App.tsx            # route table + Toast.Provider; auth-gated routing (see below)
+  pages/             # one component per route: Login, SignUp, Categories, Transactions, Profile
+  components/
+    app-layout.tsx   # authenticated shell (Outlet) — nav + page frame
+    *.tsx            # feature pieces: card-category, dialogs (upsert-category, change-password, confirm), page-header, empty state
+    ui/              # reusable primitives: button, input, select, dialog, icon-button, toast, etc.
+  hooks/             # React Query mutation hooks, one per API operation (use-sign-in, use-create-categories, …)
+  lib/
+    env.ts           # Zod-validated import.meta.env (VITE_BACKEND_URL) — single source of truth
+    graphql-client.ts   # graphql-request client pointed at the API
+    graphql-request.ts  # request() wrapper with the auth/refresh flow (see below)
+    query-client.ts     # the shared QueryClient instance
+    category-colors.ts / category-icons.ts   # the fixed palettes/icon sets a category can use
+    get-error-message.ts / get-initials.ts / utils.ts   # small helpers
+  stores/
+    auth-store.ts    # Zustand store, persisted to localStorage under "financy-auth"
+```
+
+### Routing & auth gate
+
+`App.tsx` reads `accessToken` from the auth store and swaps the whole route table on it: **logged out**, `/` renders `LoginPage`; **logged in**, `/` renders `AppLayout` (a shared shell with `<Outlet/>`) wrapping the nested routes `/` (dashboard — still a placeholder `<div>`), `/transacoes`, `/categorias`, `/usuario`. `/cadastro` is always reachable, and any unknown path redirects to `/`. This matches the challenge's "root shows login when logged out, dashboard when logged in" rule.
+
+### Auth token flow
+
+- The store (`stores/auth-store.ts`) holds `{ accessToken, refreshToken, user }`, persisted via Zustand's `persist` middleware (key `financy-auth`) so a reload stays logged in. `setAuth` replaces the trio, `updateUser` patches the cached user, `logout` clears everything.
+- `lib/graphql-request.ts` wraps every GraphQL call. On an `UNAUTHENTICATED` error it transparently calls the `refreshToken` mutation **once** (concurrent calls share a single in-flight `refreshing` promise so N failed requests trigger one refresh, not N), stores the rotated pair, and retries the original request. If there's no refresh token or the refresh itself fails, it signs out (`store.logout()` + `queryClient.clear()`) and rethrows. This mirrors the backend's stateful rotating-refresh-token design.
+- `lib/graphql-request.ts` intentionally does **not** `navigate()` on sign-out (there's a JSDoc there explaining why) — routing reacts to the store change instead. That JSDoc is the user's; leave it.

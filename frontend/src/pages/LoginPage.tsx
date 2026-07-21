@@ -95,9 +95,9 @@ export function LoginPage() {
               Lembrar-me
             </label>
 
-            <a href="#" className="font-medium text-sm text-brand-base cursor-pointer">
-              Recuperar senha
-            </a>
+            <Button asChild variant="link" className="text-sm">
+              <a href="#">Recuperar senha</a>
+            </Button>
           </div>
 
           <Button variant="primary" className="mt-2" isLoading={signIn.isPending}>

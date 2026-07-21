@@ -41,10 +41,23 @@ const deleteTransactionSchema = z.object({
   id: z.string(),
 });
 
+const listTransactionsSchema = z.object({
+  page: z.number().int().positive().optional().default(1),
+  limit: z.number().int().positive().max(100).optional().default(10),
+  type: z.enum(["INCOME", "EXPENSE"]).optional(),
+  categoryId: z.string().optional(),
+  search: z.string().optional(),
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Formato esperado: YYYY-MM")
+    .optional(),
+});
+
 export const transactionResolvers = {
   Transaction: {
     date: (parent: { date: Date | number }) => serializeDate(parent.date),
-    createdAt: (parent: { createdAt: Date | number }) => serializeDate(parent.createdAt),
+    createdAt: (parent: { createdAt: Date | number }) =>
+      serializeDate(parent.createdAt),
     category: async (parent: { categoryId: string | null }) => {
       if (!parent.categoryId) return null;
 
@@ -54,14 +67,22 @@ export const transactionResolvers = {
   },
 
   Query: {
-    transactions: async (_: unknown, _args: unknown, context: GraphQLContext) => {
+    transactions: async (
+      _: unknown,
+      args: unknown,
+      context: GraphQLContext,
+    ) => {
       const userId = ensureAuthenticated(context);
 
-      const { transactions } = await makeListTransactionUseCase().execute({
-        userId,
-      });
+      const params = validateInput(listTransactionsSchema, args);
 
-      return transactions;
+      const { transactions, total } =
+        await makeListTransactionUseCase().execute({
+          userId,
+          params,
+        });
+
+      return { items: transactions, total };
     },
   },
 
@@ -146,7 +167,11 @@ export const transactionResolvers = {
       }
     },
 
-    deleteTransaction: async (_: unknown, args: { id: string }, context: GraphQLContext) => {
+    deleteTransaction: async (
+      _: unknown,
+      args: { id: string },
+      context: GraphQLContext,
+    ) => {
       try {
         const userId = ensureAuthenticated(context);
 

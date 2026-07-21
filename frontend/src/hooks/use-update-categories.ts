@@ -53,6 +53,7 @@ export function useUpdateCategory() {
       queryClient.invalidateQueries({
         queryKey: ["categoriesCountTransactions"],
       });
+      queryClient.invalidateQueries({ queryKey: ["categoriesList"] });
     },
   });
 }

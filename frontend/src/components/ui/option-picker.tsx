@@ -20,7 +20,7 @@ export function OptionPicker<T extends string>({
 }: OptionPickerProps<T>) {
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-[14px] font-medium text-gray-700">{label}</span>
+      {label && <span className="text-[14px] font-medium text-gray-700">{label}</span>}
 
       <RadioGroup
         value={value}

@@ -48,10 +48,13 @@ const DELETE_CATEGORY = `
 const TRANSACTIONS = `
   query {
     transactions {
-      id
-      category {
+      items {
         id
+        category {
+          id
+        }
       }
+      total
     }
   }
 `;
@@ -134,11 +137,14 @@ describe("Category (e2e)", () => {
     expect(deleteCategory).toBe(true);
 
     const { transactions } = await gql<{
-      transactions: { id: string; category: { id: string } | null }[];
+      transactions: {
+        items: { id: string; category: { id: string } | null }[];
+        total: number;
+      };
     }>(url, TRANSACTIONS, undefined, token);
 
-    expect(transactions).toHaveLength(1);
-    expect(transactions[0]?.id).toBe(createTransaction.id);
-    expect(transactions[0]?.category).toBeNull();
+    expect(transactions.items).toHaveLength(1);
+    expect(transactions.items[0]?.id).toBe(createTransaction.id);
+    expect(transactions.items[0]?.category).toBeNull();
   });
 });

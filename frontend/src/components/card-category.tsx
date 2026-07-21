@@ -1,5 +1,7 @@
 import { type LucideIcon, SquarePen, Trash } from "lucide-react";
 import { IconButton } from "./ui/icon-button";
+import { TagCategory } from "./tag-category";
+import { IconCategory } from "./icon-category";
 
 type Category = {
   transactionsCount: number;
@@ -20,7 +22,7 @@ type CardCategoryProps = {
 
 export function CardCategory({
   key,
-  icon: Icon,
+  icon,
   category,
   deleteCategory,
   editCategory,
@@ -31,14 +33,7 @@ export function CardCategory({
       className="flex flex-col p-6 bg-white border border-gray-200 rounded-xl w-full sm:w-71 h-56.5"
     >
       <div className="flex justify-between w-full">
-        <div
-          className="h-10 w-10 rounded-lg flex items-center justify-center"
-          style={{
-            backgroundColor: `color-mix(in srgb, ${category.color} 15%, white)`,
-          }}
-        >
-          <Icon className="size-4" color={category.color} />
-        </div>
+        <IconCategory color={category.color} icon={icon} />
 
         <div className="flex gap-2 top-0">
           <IconButton
@@ -57,22 +52,18 @@ export function CardCategory({
         </div>
       </div>
 
-      <h3 className="text-[16px] text-gray-800 font-semibold mt-6">{category.name}</h3>
+      <h3 className="text-[16px] text-gray-800 font-semibold mt-6">
+        {category.name}
+      </h3>
 
       <p className="text-[14px] text-gray-600">{category.description}</p>
 
       <div className="flex w-full justify-between mt-auto">
-        <div
-          className="rounded-full font-medium text-[14px] pt-1 pb-1 pr-3 pl-3"
-          style={{
-            backgroundColor: `color-mix(in srgb, ${category.color} 15%, white)`,
-            color: `${category.color}`,
-          }}
-        >
-          {category.name}
-        </div>
+        <TagCategory color={category.color} name={category.name} />
 
-        <p className="font-medium text-[14px] text-gray-600">{category.transactionsCount} itens</p>
+        <p className="font-medium text-[14px] text-gray-600">
+          {category.transactionsCount} itens
+        </p>
       </div>
     </article>
   );

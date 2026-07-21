@@ -129,7 +129,7 @@ export function UpSertCategoryDialog({ open, onOpenChange, category }: UpSertCat
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-w-110.5">
           <DialogTitle className="text-[16px] font-semibold text-gray-800">
             {category ? "Alterar categoria" : "Nova categoria"}

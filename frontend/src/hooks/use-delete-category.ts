@@ -25,6 +25,7 @@ export function useDeleteCategory() {
       queryClient.invalidateQueries({
         queryKey: ["categoriesCountTransactions"],
       });
+      queryClient.invalidateQueries({ queryKey: ["categoriesList"] });
     },
   });
 }
