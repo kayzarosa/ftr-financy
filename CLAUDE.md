@@ -15,8 +15,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Financy is a fullstack finance-tracking app built for a graduate-level challenge, split into two independent projects in one repo:
 
-- `backend/` — GraphQL API (TypeScript, Fastify, Apollo Server, Prisma, SQLite). Auth, category, and transaction CRUD are all implemented and working end-to-end (with unit specs). The one gap: the `transactions` query still returns every transaction — pagination and filters (type, category, search-by-name, month) are being added to it.
-- `frontend/` — React app (Vite, TypeScript, GraphQL). Auth (sign-up/sign-in/logout with token refresh), the app shell/layout, category CRUD, and the profile/password screens are built and wired to the API. The dashboard route (`/`) and the transactions screen are still placeholders — transaction CRUD isn't done on either side yet.
+- `backend/` — GraphQL API (TypeScript, Fastify, Apollo Server, Prisma, SQLite). Auth, category, and transaction CRUD are all implemented and working end-to-end (with unit + e2e specs), including the paginated/filtered `transactions` query (type, category, search-by-name, month), a `transactions.total` count, and two dashboard aggregation queries: `transactionSummary(month)` (all-time balance + monthly income/expense, via `groupBy` on `type`) and `categorySpending(month)` (monthly **expense-only** total + count per category, via `groupBy` on `categoryId`, sorted by total desc).
+- `frontend/` — React app (Vite, TypeScript, GraphQL). Auth (sign-up/sign-in/logout with token refresh), the app shell/layout, category CRUD, the profile/password screens, the **transactions screen** (list with pagination + filters, create/edit/delete via dialog), and the **dashboard** (`/`) are all built and wired to the API. The dashboard shows the three summary cards (`useTransactionSummary`), a recent-transactions list (`useRecentTransactions`, responsive: tag drops under the name on mobile) with an inline "Nova transação" dialog, and a spending-by-category card (`useCategorySpending`). All screens are done.
 
 There is no root-level `package.json`; each side is set up and run independently from its own folder. Package manager is **pnpm** everywhere.
 
@@ -30,9 +30,10 @@ pnpm start            # node dist/infra/http/server.js — run compiled build
 pnpm lint             # biome check .
 pnpm format           # biome check --write .
 
-pnpm test             # vitest run — full suite, single run
+pnpm test             # vitest run — unit suite (in-memory repos), single run
 pnpm test:watch       # vitest — watch mode
 pnpm test:coverage    # vitest run --coverage — text + HTML report (coverage/index.html)
+pnpm test:e2e         # vitest run --config vitest.config.e2e.ts — real-DB e2e (test.db)
 pnpm test src/use-cases/auth/sign-up.spec.ts   # run a single test file
 
 pnpm exec prisma migrate dev --name <name>     # create + apply a migration
@@ -50,6 +51,10 @@ pnpm preview          # vite preview — serve the production build locally
 
 pnpm lint             # biome check .
 pnpm format           # biome check --write .
+
+pnpm test             # vitest run — unit + integration (jsdom), single run
+pnpm test:watch       # vitest — watch mode
+pnpm test:e2e         # playwright test — real browser e2e (boots back+front itself)
 ```
 
 The front reads the API URL from `VITE_BACKEND_URL` (see `.env.example`), parsed through `src/lib/env.ts`. Start the backend (`pnpm dev` in `backend/`) before the front so GraphQL requests have something to hit.
@@ -172,10 +177,19 @@ src/
 
 ### Routing & auth gate
 
-`App.tsx` reads `accessToken` from the auth store and swaps the whole route table on it: **logged out**, `/` renders `LoginPage`; **logged in**, `/` renders `AppLayout` (a shared shell with `<Outlet/>`) wrapping the nested routes `/` (dashboard — still a placeholder `<div>`), `/transacoes`, `/categorias`, `/usuario`. `/cadastro` is always reachable, and any unknown path redirects to `/`. This matches the challenge's "root shows login when logged out, dashboard when logged in" rule.
+`App.tsx` reads `accessToken` from the auth store and swaps the whole route table on it: **logged out**, `/` renders `LoginPage`; **logged in**, `/` renders `AppLayout` (a shared shell with `<Outlet/>`) wrapping the nested routes `/` (`DashboardPage`), `/transacoes`, `/categorias`, `/usuario`. `/cadastro` is always reachable, and any unknown path redirects to `/`. This matches the challenge's "root shows login when logged out, dashboard when logged in" rule.
 
 ### Auth token flow
 
 - The store (`stores/auth-store.ts`) holds `{ accessToken, refreshToken, user }`, persisted via Zustand's `persist` middleware (key `financy-auth`) so a reload stays logged in. `setAuth` replaces the trio, `updateUser` patches the cached user, `logout` clears everything.
 - `lib/api/graphql-request.ts` wraps every GraphQL call. On an `UNAUTHENTICATED` error it transparently calls the `refreshToken` mutation **once** (concurrent calls share a single in-flight `refreshing` promise so N failed requests trigger one refresh, not N), stores the rotated pair, and retries the original request. If there's no refresh token or the refresh itself fails, it signs out (`store.logout()` + `queryClient.clear()`) and rethrows. This mirrors the backend's stateful rotating-refresh-token design.
 - `lib/api/graphql-request.ts` intentionally does **not** `navigate()` on sign-out (there's a JSDoc there explaining why) — routing reacts to the store change instead. That JSDoc is the user's; leave it.
+
+### Testing
+
+Three layers. Specs are **co-located** (`*.spec.ts(x)` next to the code), same convention as the backend.
+
+- **Unit + integration (Vitest, `pnpm test`)** — `vitest.config.ts` uses `mergeConfig(viteConfig, …)` (needed so the `@` alias and React plugin carry over; a standalone vitest config otherwise stops reading `vite.config.ts`), with `environment: "jsdom"`, `globals: true`, `setupFiles: ["./src/test/setup.ts"]`, and `exclude: [...configDefaults.exclude, "e2e/**"]` (so Vitest never tries to run the Playwright specs). `src/test/`: `setup.ts` (jest-dom matchers + MSW lifecycle with `onUnhandledRequest: "error"`), `msw-server.ts` (base `setupServer()`, handlers added per-test via `server.use`), `test-utils.tsx` (`renderWithProviders` wrapping `QueryClientProvider` with `retry: false` + `Toast.Provider`; re-exports RTL). MSW intercepts the GraphQL endpoint via `graphql.link("http://localhost:3333/graphql")`. Covers `lib/format` + `lib/helpers`, `stores/auth-store`, the `graphql-request` refresh flow, and the form dialogs.
+- **E2E (Playwright, `pnpm test:e2e`)** — specs in `frontend/e2e/`. `playwright.config.ts`'s `webServer` array boots **both** servers itself: the backend (`cwd: ../backend`, `env: { DATABASE_URL: "file:./e2e.db" }`, `prisma db push` on a freshly-deleted db, readiness on `http://localhost:3333/graphql` which answers `400` — Playwright accepts 400–403) and the frontend (`pnpm dev --port 5173 --strictPort`). No per-test DB reset: each test signs up a unique user (`e2e-${Date.now()}`), and the app being multi-tenant by `userId` isolates them. Config path helper uses `import.meta.dirname` (the config loads as native ESM under `"type": "module"` — `__dirname` throws).
+
+Gotchas that bite (both layers): `Intl` currency uses a non-breaking space between `R$` and the number — normalize with `.replace(/ | /g, " ")` before comparing. Timezone-sensitive tests use `vi.stubEnv("TZ", …)` (not `process.env`, which isn't typed under `tsconfig.app.json`). MSW resolver helpers must be typed `GraphQLResponseResolver<Query>` or `HttpResponse.json`'s `NoInfer` widens the body to `JsonBodyType` and fails `tsc`. `playwright.config.ts` must sit in `tsconfig.node.json`'s `include` (for the `node` types) — but `vitest.config.ts` must **not** (its extensionless `./vite.config` import breaks under `nodenext`). E2E selectors: `getByLabel("Senha")` also matches the "Mostrar senha" eye toggle → use `{ exact: true }`; category/transaction names render twice (card + tag, or desktop + mobile) → use a role or `.first()`.

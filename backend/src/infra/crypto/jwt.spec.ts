@@ -16,7 +16,7 @@ describe("jwt", () => {
 
   it("must throw for an expired token", () => {
     const jwt = require("jsonwebtoken");
-    const expiredToken = jwt.sign({ sub: "user-123", type: "access" }, process.env["JWT_SECRET"], {
+    const expiredToken = jwt.sign({ sub: "user-123", type: "access" }, process.env.JWT_SECRET, {
       expiresIn: -1,
     });
 

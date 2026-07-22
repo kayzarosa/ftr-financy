@@ -33,7 +33,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   ): Promise<{ transactions: Transaction[]; total: number }> {
     const { limit, page, categoryId, month, search, type } = params;
 
-    let dateRange;
+    let dateRange: { gte: Date; lt: Date } | undefined;
     if (month) {
       const { start, end } = getMonthRange(month);
       dateRange = { gte: start, lt: end };
@@ -68,7 +68,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     userId: string,
     month?: string,
   ): Promise<SummaryByUserId> {
-    let dateRange;
+    let dateRange: { gte: Date; lt: Date } | undefined;
     if (month) {
       const { start, end } = getMonthRange(month);
       dateRange = { gte: start, lt: end };
