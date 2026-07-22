@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "biome check .",
     "preview": "vite preview",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -36,14 +39,21 @@
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@biomejs/biome": "2.5.3",
+    "@playwright/test": "^1.61.1",
     "@rolldown/plugin-babel": "^0.2.3",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/babel__core": "^7.20.5",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "babel-plugin-react-compiler": "^1.0.0",
+    "jsdom": "^29.1.1",
+    "msw": "^2.15.0",
     "typescript": "~6.0.2",
-    "vite": "^8.1.1"
+    "vite": "^8.1.1",
+    "vitest": "^4.1.10"
   }
 }
