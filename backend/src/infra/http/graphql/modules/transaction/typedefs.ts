@@ -1,6 +1,11 @@
 export const transactionTypeDefs = `#graphql
+  """
+  Tipo de uma transação: entrada ou saída de dinheiro.
+  """
   enum TransactionType {
+    "Entrada de dinheiro (receita)."
     INCOME
+    "Saída de dinheiro (despesa)."
     EXPENSE
   }
 
@@ -22,6 +27,18 @@ export const transactionTypeDefs = `#graphql
     category: Category
     "Data de criaçào do registro, em formato ISO 8601"
     createdAt: String!
+  }
+
+  """
+  Resumo financeiro do usuário. Todos os valores em centavos.
+  """
+  type TransactionSummary {
+    "Saldo total: todas as receitas menos todas as despesas (histórico completo)."
+    balance: Int!
+    "Total de receitas do mês consultado."
+    income: Int!
+    "Total de despesas do mês consultado."
+    expense: Int!
   }
 
   extend type Mutation {
@@ -57,8 +74,13 @@ export const transactionTypeDefs = `#graphql
     deleteTransaction(id: ID!): Boolean!
   }
 
+  """
+  Página de transações acompanhada do total geral (para paginação).
+  """
   type TransactionsResult {
+    "As transações da página atual."
     items: [Transaction!]!
+    "Total de transações que batem no filtro, ignorando a paginação."
     total: Int!
   }
 
@@ -75,5 +97,12 @@ export const transactionTypeDefs = `#graphql
       search: String
       month: String
     ): TransactionsResult!
+
+    """
+    Resumo financeiro do usuário autenticado: saldo acumulado (histórico) e
+    receitas/despesas do mês informado (YYYY-MM; padrão o mês corrente do cliente).
+    Requer header Authorization com um accessToken válido.
+    """
+    transactionSummary(month: String): TransactionSummary!
   }
 `;

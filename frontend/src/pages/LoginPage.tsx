@@ -96,7 +96,7 @@ export function LoginPage() {
             </label>
 
             <Button asChild variant="link" className="text-sm">
-              <a href="#">Recuperar senha</a>
+              <button type="button">Recuperar senha</button>
             </Button>
           </div>
 

@@ -2,6 +2,7 @@ import * as Toast from "@radix-ui/react-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, type RenderOptions } from "@testing-library/react";
 import type { ReactElement, ReactNode } from "react";
+import { MemoryRouter } from "react-router-dom";
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -15,7 +16,9 @@ function createTestQueryClient() {
 function AllProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={createTestQueryClient()}>
-      <Toast.Provider>{children}</Toast.Provider>
+      <MemoryRouter>
+        <Toast.Provider>{children}</Toast.Provider>
+      </MemoryRouter>
     </QueryClientProvider>
   );
 }

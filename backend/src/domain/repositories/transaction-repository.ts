@@ -10,6 +10,12 @@ export type ListTransactionsParams = {
   month?: string | undefined;
 };
 
+export type SummaryByUserId = {
+  balance: number;
+  income: number;
+  expense: number;
+};
+
 export interface ITransactionRepository {
   create(
     data: Omit<Transaction, "id" | "createdAt" | "updatedAt">,
@@ -26,4 +32,5 @@ export interface ITransactionRepository {
     params: ListTransactionsParams,
   ): Promise<{ transactions: Transaction[]; total: number }>;
   findById(id: string): Promise<Transaction | null>;
+  getSummaryByUserId(userId: string, month?: string): Promise<SummaryByUserId>;
 }

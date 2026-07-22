@@ -2,6 +2,7 @@ import type { Transaction } from "@/domain/entities/transaction.js";
 import type {
   ITransactionRepository,
   ListTransactionsParams,
+  SummaryByUserId,
 } from "@/domain/repositories/transaction-repository.js";
 import { prisma } from "../prisma.js";
 import { getMonthRange } from "@/domain/utils/get-month-range.js";
@@ -49,7 +50,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     const [transactions, total] = await Promise.all([
       prisma.transaction.findMany({
         where,
-        orderBy: { date: "desc" },
+        orderBy: [{ date: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * limit,
         take: limit,
       }),
@@ -61,5 +62,38 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 
   async findById(id: string): Promise<Transaction | null> {
     return await prisma.transaction.findUnique({ where: { id } });
+  }
+
+  async getSummaryByUserId(
+    userId: string,
+    month?: string,
+  ): Promise<SummaryByUserId> {
+    let dateRange;
+    if (month) {
+      const { start, end } = getMonthRange(month);
+      dateRange = { gte: start, lt: end };
+    }
+
+    const [allTime, byMonth] = await Promise.all([
+      prisma.transaction.groupBy({
+        by: ["type"],
+        where: { userId },
+        _sum: { value: true },
+      }),
+      prisma.transaction.groupBy({
+        by: ["type"],
+        where: { userId, ...(dateRange && { date: dateRange }) },
+        _sum: { value: true },
+      }),
+    ]);
+
+    const sumOf = (groups: typeof allTime, type: "INCOME" | "EXPENSE") =>
+      groups.find((g) => g.type === type)?._sum.value ?? 0;
+
+    const balance = sumOf(allTime, "INCOME") - sumOf(allTime, "EXPENSE");
+    const income = sumOf(byMonth, "INCOME");
+    const expense = sumOf(byMonth, "EXPENSE");
+
+    return { balance, income, expense };
   }
 }

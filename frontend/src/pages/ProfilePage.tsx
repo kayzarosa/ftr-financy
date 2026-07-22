@@ -50,13 +50,15 @@ export function ProfilePage() {
   function onSubmit(values: UpdateUserFormValues) {
     updateUser.mutate(values, {
       onSuccess: (data) => {
-        updateUserInStore(data.updateUser),
-          setToastVariant("success"),
-          setToastDescription("Dados atualizados com sucesso."),
-          setToastOpen(true);
+        updateUserInStore(data.updateUser);
+        setToastVariant("success");
+        setToastDescription("Dados atualizados com sucesso.");
+        setToastOpen(true);
       },
       onError: (error) => {
-        setToastVariant("error"), setToastDescription(getErrorMessage(error)), setToastOpen(true);
+        setToastVariant("error");
+        setToastDescription(getErrorMessage(error));
+        setToastOpen(true);
       },
     });
   }

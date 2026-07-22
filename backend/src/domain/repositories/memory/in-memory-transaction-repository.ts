@@ -1,6 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { Transaction } from "@/domain/entities/transaction.js";
-import type { ITransactionRepository, ListTransactionsParams } from "../transaction-repository.js";
+import type {
+  ITransactionRepository,
+  ListTransactionsParams,
+  SummaryByUserId,
+} from "../transaction-repository.js";
 import { getMonthRange } from "@/domain/utils/get-month-range.js";
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
@@ -74,7 +78,10 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       filtered = filtered.filter((t) => t.date >= start && t.date < end);
     }
 
-    filtered.sort((a, b) => b.date.getTime() - a.date.getTime());
+    filtered.sort((a, b) => {
+      const byDate = b.date.getTime() - a.date.getTime();
+      return byDate !== 0 ? byDate : b.createdAt.getTime() - a.createdAt.getTime();
+    });
 
     const total = filtered.length;
     const transactions = filtered.slice(
@@ -89,5 +96,33 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     return (
       this.transactions.find((transaction) => transaction.id === id) ?? null
     );
+  }
+
+  async getSummaryByUserId(
+    userId: string,
+    month?: string,
+  ): Promise<SummaryByUserId> {
+    const userTransactions = this.transactions.filter(
+      (t) => t.userId === userId,
+    );
+
+    const sum = (list: Transaction[], type: "INCOME" | "EXPENSE") =>
+      list.filter((t) => t.type === type).reduce((acc, t) => acc + t.value, 0);
+
+    const balance =
+      sum(userTransactions, "INCOME") - sum(userTransactions, "EXPENSE");
+
+    let monthTransactions = userTransactions;
+    if (month) {
+      const { start, end } = getMonthRange(month);
+      monthTransactions = userTransactions.filter(
+        (t) => t.date >= start && t.date < end,
+      );
+    }
+
+    const income = sum(monthTransactions, "INCOME");
+    const expense = sum(monthTransactions, "EXPENSE");
+
+    return { balance, income, expense };
   }
 }

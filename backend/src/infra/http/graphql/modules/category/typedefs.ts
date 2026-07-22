@@ -19,6 +19,24 @@ export const categoryTypeDefs = `#graphql
     transactionsCount: Int
   }
 
+  """
+  Gastos (despesas) de uma categoria em um mês específico.
+  """
+  type CategorySpending {
+    "Identificador único da categoria."
+    id: ID!
+    "Nome da categoria."
+    name: String!
+    "Cor de exibição da categoria, em hexadecimal."
+    color: String!
+    "Nome do ícone (Lucide) da categoria."
+    icon: String!
+    "Total gasto na categoria no mês, em centavos (só despesas)."
+    total: Int!
+    "Quantidade de despesas na categoria no mês."
+    count: Int!
+  }
+
   extend type Mutation {
     """
     Cria uma nova categoria
@@ -58,5 +76,11 @@ export const categoryTypeDefs = `#graphql
     Requer header Authorization com um accessToken válido.
     """
     categoriesCountTransactions: [Category!]!
+
+    """
+    Gastos por categoria no mês informado (só despesas), ordenado por total desc.
+    Só retorna categorias com gasto no mês. Requer Authorization.
+    """
+    categorySpending(month: String!): [CategorySpending!]!
   }
 `;

@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 import { makeCreateCategoryUseCase } from "@/infra/factories/category/make-create-category-use-case.js";
 import { makeDeleteCategoryUseCase } from "@/infra/factories/category/make-delete-category-use-case.js";
+import { makeGetCategorySpendingUseCase } from "@/infra/factories/category/make-get-category-spending-use-case.js";
 import { makeListCategoriesCountTransactionsUseCase } from "@/infra/factories/category/make-list-categories-count-transactions-use-case.js";
 import { makeListCategoriesUseCase } from "@/infra/factories/category/make-list-categories-use-case.js";
 import { makeUpdateCategoryUseCase } from "@/infra/factories/category/make-update-category-use-case.js";
@@ -31,6 +32,10 @@ const deleteCategorySchema = z.object({
   id: z.string(),
 });
 
+const categorySpendingSchema = z.object({
+  month: z.string().regex(/^\d{4}-\d{2}$/, "Formato esperado: YYYY-MM"),
+});
+
 export const categoryResolvers = {
   Category: {
     createdAt: (parent: { createdAt: Date | number }) => serializeDate(parent.createdAt),
@@ -50,6 +55,19 @@ export const categoryResolvers = {
 
       const { categories } = await makeListCategoriesCountTransactionsUseCase().execute({
         userId,
+      });
+
+      return categories;
+    },
+
+    categorySpending: async (_: unknown, args: unknown, context: GraphQLContext) => {
+      const userId = ensureAuthenticated(context);
+
+      const { month } = validateInput(categorySpendingSchema, args);
+
+      const { categories } = await makeGetCategorySpendingUseCase().execute({
+        userId,
+        month,
       });
 
       return categories;

@@ -12,6 +12,7 @@ import { validateInput } from "@/infra/http/graphql/validate-input.js";
 import { CategoryNotFoundError } from "@/use-cases/errors/category-not-found-error.js";
 import { TransactionNotFoundError } from "@/use-cases/errors/transaction-not-found-error.js";
 import { UserNotExistsError } from "@/use-cases/errors/user-not-exists-error.js";
+import { makeGetTransactionSummaryUseCase } from "@/infra/factories/transaction/make-get-transaction-summary-use-case.js";
 
 const createTransactionSchema = z.object({
   name: z.string().min(1, "Nome não pode ser vazio"),
@@ -53,6 +54,13 @@ const listTransactionsSchema = z.object({
     .optional(),
 });
 
+const transactionSummarySchema = z.object({
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Formato esperado: YYYY-MM")
+    .optional(),
+});
+
 export const transactionResolvers = {
   Transaction: {
     date: (parent: { date: Date | number }) => serializeDate(parent.date),
@@ -83,6 +91,22 @@ export const transactionResolvers = {
         });
 
       return { items: transactions, total };
+    },
+    transactionSummary: async (
+      _: unknown,
+      args: unknown,
+      context: GraphQLContext,
+    ) => {
+      const userId = ensureAuthenticated(context);
+
+      const { month } = validateInput(transactionSummarySchema, args);
+
+      const { summary } = await makeGetTransactionSummaryUseCase().execute({
+        userId,
+        ...(month && { month }),
+      });
+
+      return summary;
     },
   },
 

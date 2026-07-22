@@ -12,3 +12,12 @@ export interface Category {
 export interface CategoryWithUsageCount extends Category {
   transactionsCount: number;
 }
+
+export type CategorySpending = {
+  id: string;
+  name: string;
+  color: string;
+  icon: string;
+  total: number;
+  count: number;
+};

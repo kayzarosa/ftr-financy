@@ -52,9 +52,15 @@ export function TransactionsBody({
             {name}
           </div>
         </span>
-        <span className="text-[14px] text-gray-600 flex justify-center">{formattedDate}</span>
+        <span className="text-[14px] text-gray-600 flex justify-center">
+          {formattedDate}
+        </span>
         <span className="flex justify-center">
-          {nameCategory && color ? <TagCategory color={color} name={nameCategory} /> : "—"}
+          {nameCategory && color ? (
+            <TagCategory color={color} name={nameCategory} />
+          ) : (
+            "—"
+          )}
         </span>
         <span className="flex justify-center">
           <TypeTransaction type={type} />
@@ -78,12 +84,18 @@ export function TransactionsBody({
             <p className="truncate font-medium text-gray-800">{name}</p>
             <p className="text-[12px] text-gray-500">{formattedDate}</p>
           </div>
-          <span className="whitespace-nowrap font-medium text-gray-800">{formattedValue}</span>
+          <span className="whitespace-nowrap font-medium text-gray-800">
+            {formattedValue}
+          </span>
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {nameCategory && color ? <TagCategory color={color} name={nameCategory} /> : "—"}
+            {nameCategory && color ? (
+              <TagCategory color={color} name={nameCategory} />
+            ) : (
+              "—"
+            )}
             <TypeTransaction type={type} />
           </div>
           <div className="flex gap-2">
